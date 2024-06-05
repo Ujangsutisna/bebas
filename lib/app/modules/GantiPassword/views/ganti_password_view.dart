@@ -61,6 +61,8 @@ class GantiPasswordView extends GetView<GantiPasswordController> {
                           9 * mediaquerypixel, bluedark),
                       _Text('Masukan email yang terdaftrar :', FontWeight.w400,
                           9 * mediaquerypixel, bluedark),
+                      _Text('Masukan email yang terdaftrar :', FontWeight.w400,
+                          9 * mediaquerypixel, bluedark),
                       SizedBox(
                         height: 10,
                       ),
