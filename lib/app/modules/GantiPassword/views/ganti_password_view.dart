@@ -1,11 +1,13 @@
+// ignore_for_file: non_constant_identifier_names, use_super_parameters
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../controllers/ganti_password_controller.dart';
 
-final _formkey = GlobalKey<FormState>();
+final _Passwordformkey = GlobalKey<FormState>();
 final email = TextEditingController();
 
 class GantiPasswordView extends GetView<GantiPasswordController> {
@@ -26,13 +28,30 @@ class GantiPasswordView extends GetView<GantiPasswordController> {
         child: ListView(
           children: [
             Container(
-              height: mediaquerysize.height * 0.4,
-              padding: const EdgeInsets.fromLTRB(20, 40, 20, 10),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
+                  Row(
+                    children: [
+                      IconButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          icon: const Icon(
+                            CupertinoIcons.arrow_left,
+                            color: Colors.white,
+                            size: 30,
+                          )),
+                      Text('Lupa Password',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12 * mediaquerypixel,
+                              color: Colors.white))
+                    ],
+                  ),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: Image.asset(
                       'assets/images/Logo1.png',
                       width: mediaquerysize.width,
@@ -45,25 +64,22 @@ class GantiPasswordView extends GetView<GantiPasswordController> {
             Container(
               padding: const EdgeInsets.all(20),
               width: mediaquerysize.width,
-              height: mediaquerysize.height * 0.6,
+              height: mediaquerysize.height * 0.7,
               decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(15.0),
                       topRight: Radius.circular(15.0))),
               child: Form(
-                  key: _formkey,
+                  key: _Passwordformkey,
                   child: Column(
                     children: [
-                      _Text(' Lupa Password ?', FontWeight.w800,
-                          14 * mediaquerypixel, bluedark),
-                      _Text('Masukan email yang terdaftrar :', FontWeight.w400,
-                          9 * mediaquerypixel, bluedark),
-                      _Text('Masukan email yang terdaftrar :', FontWeight.w400,
-                          9 * mediaquerypixel, bluedark),
-                      _Text('Masukan email yang terdaftrar :', FontWeight.w400,
-                          9 * mediaquerypixel, bluedark),
-                      SizedBox(
+                      Text(' Lupa Password ?',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 10 * mediaquerypixel,
+                              color: bluedark)),
+                      const SizedBox(
                         height: 10,
                       ),
                       _TextFormField(),
@@ -102,7 +118,7 @@ class GantiPasswordView extends GetView<GantiPasswordController> {
         height: 50,
         child: ElevatedButton(
           onPressed: () {
-            if (_formkey.currentState!.validate()) {
+            if (_Passwordformkey.currentState!.validate()) {
               Get.toNamed('verif-o-t-p');
               Get.snackbar(
                   'Berhasil', 'Silahkan Lihat OTP yang kami kirim via email',
@@ -112,23 +128,13 @@ class GantiPasswordView extends GetView<GantiPasswordController> {
                   colorText: Colors.white);
             }
           },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [const Text('Kirim kode OTP'), Icon(Icons.chevron_right)],
-          ),
           style: ElevatedButton.styleFrom(backgroundColor: color),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [Text('Kirim kode OTP'), Icon(Icons.chevron_right)],
+          ),
         ));
   }
 
-  _Text(String tittle, FontWeight fontweight, double size, Color color) {
-    return Text(
-      tittle,
-      style: GoogleFonts.getFont(
-        'Alumni Sans',
-        fontWeight: fontweight,
-        fontSize: size,
-        color: color,
-      ),
-    );
-  }
+
 }

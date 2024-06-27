@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import 'package:google_fonts/google_fonts.dart';
-
 import '../controllers/login_controller.dart';
 
-final formKey = GlobalKey<FormState>();
 final Username = TextEditingController();
+
 final Password = TextEditingController();
 
 // ignore: non_constant_identifier_names
@@ -18,7 +16,7 @@ class LoginView extends GetView<LoginController> {
   Widget build(BuildContext context) {
     final Size mediaquerysize = MediaQuery.of(context).size;
     final double mediaquerypixel = MediaQuery.of(context).devicePixelRatio;
-
+    final loginController = Get.put(LoginController());
     var bluedark = const Color(0xff2b3f85);
     var bluelight = const Color(0xff32529f);
     // var yellowglobal = const Color(0xfff8ab1d);
@@ -56,10 +54,16 @@ class LoginView extends GetView<LoginController> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        _Text('Selamat Datang', FontWeight.w800,
-                            20 * mediaquerypixel, Colors.white),
-                        _Text('Aplikasi Pendaftaran KKN UGM', FontWeight.w400,
-                            9 * mediaquerypixel, Colors.white),
+                        Text('Selamat Datang',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 16 * mediaquerypixel,
+                                color: Colors.white)),
+                        Text('Aplikasi Pendaftaran KKN UGM',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 7 * mediaquerypixel,
+                                color: Colors.white)),
                       ],
                     ),
                   )
@@ -68,7 +72,7 @@ class LoginView extends GetView<LoginController> {
             ),
             Container(
               width: double.infinity,
-              height: mediaquerysize.height*0.6,
+              height: mediaquerysize.height * 0.6,
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -77,7 +81,7 @@ class LoginView extends GetView<LoginController> {
                     topRight: Radius.circular(15.0)),
               ),
               child: Form(
-                key: formKey,
+                key: loginController.loginformKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -86,14 +90,20 @@ class LoginView extends GetView<LoginController> {
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Column(
                           children: [
-                            _Text('LOGIN', FontWeight.w800,
-                                14 * mediaquerypixel, bluedark),
-                            _Text('Masukan Username Dan Password',
-                                FontWeight.w400, 9 * mediaquerypixel, bluedark)
+                            Text('LOGIN',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 12 * mediaquerypixel,
+                                    color: bluedark)),
+                            Text('Masukan Username Dan Password',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 7 * mediaquerypixel,
+                                    color: bluedark))
                           ],
                         )),
-                        Divider(),
-                        SizedBox(height:10),
+                    Divider(),
+                    SizedBox(height: 10),
                     _FielInput('Username', Username),
                     _FielInput('Password', Password),
                     SizedBox(
@@ -101,7 +111,8 @@ class LoginView extends GetView<LoginController> {
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () {
-                          if (formKey.currentState!.validate()) {
+                          if (controller.loginformKey.currentState!
+                              .validate()) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                   backgroundColor: Colors.green,
@@ -133,20 +144,14 @@ class LoginView extends GetView<LoginController> {
                           }
                         },
                         child: const Text("Simpan"),
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: bluelight),
                       ),
                     ),
                     TextButton(
                         onPressed: () {
                           Get.toNamed('ganti-password');
-                          Get.snackbar(
-                              'Alert', 'Waktunya ganti password sayang',
-                              backgroundColor: redglobal,
-                              colorText: Colors.white);
                         },
-                        child: _Text('Lupa Password ?', FontWeight.w400,
-                            9 * mediaquerypixel,Colors.blue))
+                        child: Text('Lupa Password ?',style:TextStyle(fontWeight: FontWeight.w400,
+                            fontSize: 7 * mediaquerypixel,color: Colors.blue)))
                   ],
                 ),
               ),
@@ -164,7 +169,6 @@ class LoginView extends GetView<LoginController> {
       ),
       child: TextFormField(
         decoration: InputDecoration(
-      
           border: const OutlineInputBorder(),
           labelText: Label,
         ),
@@ -175,18 +179,6 @@ class LoginView extends GetView<LoginController> {
           return null;
         },
         controller: ctrl,
-      ),
-    );
-  }
-
-  _Text(String tittle, FontWeight fontweight, double size, Color color) {
-    return Text(
-      tittle,
-      style: GoogleFonts.getFont(
-        'Alumni Sans',
-        fontWeight: fontweight,
-        fontSize: size,
-        color: color,
       ),
     );
   }

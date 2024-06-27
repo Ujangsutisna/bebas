@@ -8,6 +8,8 @@ abstract class Routes {
   static const LOGIN = _Paths.LOGIN;
   static const GANTI_PASSWORD = _Paths.GANTI_PASSWORD;
   static const VERIF_O_T_P = _Paths.VERIF_O_T_P;
+  static const DAFTARKKN = _Paths.DAFTARKKN;
+  static const UBAH_PASSWORD = _Paths.UBAH_PASSWORD;
 }
 
 abstract class _Paths {
@@ -17,4 +19,6 @@ abstract class _Paths {
   static const LOGIN = '/login';
   static const GANTI_PASSWORD = '/ganti-password';
   static const VERIF_O_T_P = '/verif-o-t-p';
+  static const DAFTARKKN = '/daftarkkn';
+  static const UBAH_PASSWORD = '/ubah-password';
 }

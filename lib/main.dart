@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'app/routes/app_pages.dart';
 
@@ -14,9 +15,13 @@ void main() {
 
   runApp(
     GetMaterialApp(
-      title: "Application",
+      title: "Pendaftaran KKN",
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
+      theme: ThemeData(
+        textTheme: GoogleFonts.notoSansTextTheme(),
+        colorScheme: const ColorScheme.light(primary: Color(0xff2b3f85)),
+      ),
     ),
   );
 }

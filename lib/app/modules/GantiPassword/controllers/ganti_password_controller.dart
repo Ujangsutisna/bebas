@@ -18,6 +18,6 @@ class GantiPasswordController extends GetxController {
   void onClose() {
     super.onClose();
   }
-
+  
   void increment() => count.value++;
 }

@@ -1,3 +1,7 @@
+// ignore_for_file: non_constant_identifier_names
+
+import 'package:bebas/app/data/model/Mahasiswa.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -5,200 +9,212 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../controllers/beranda_controller.dart';
 
+var bluedark = const Color(0xff2b3f85);
+var bluelight = const Color(0xff32529f);
+var yellowglobal = const Color.fromRGBO(248, 171, 29, 1);
+var redglobal = const Color(0xffea1e35);
+var greenglo = const Color(0xff06880b);
+
 class BerandaView extends GetView<BerandaController> {
   const BerandaView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    var bluedark = const Color(0xff2b3f85);
-    var bluelight = const Color(0xff32529f);
-    var yellowglobal = const Color(0xfff8ab1d);
-    var redglobal = const Color(0xffea1e35);
+    final Size mdsize = MediaQuery.of(context).size;
+    final double mdsizepixel = MediaQuery.of(context).devicePixelRatio;
     return Scaffold(
-        body: Container(
-      margin: const EdgeInsets.fromLTRB(10, 20, 10, 20),
+        body: Theme(
+      data: ThemeData(colorScheme: ColorScheme.light(primary: bluedark)),
       child: Container(
-        height: double.infinity,
-        width: double.infinity,
-        child: ListView(
+        width: mdsize.width,
+        height: mdsize.height,
+        decoration: BoxDecoration(
+          color: bluedark,
+        ),
+        margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+        child: Column(
           children: [
             // --------- container Informasi dan menu ---------
             Container(
               width: double.infinity,
-              child: Column(children: [
-                // Judul dan logout
-                Container(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              margin: const EdgeInsets.fromLTRB(10, 20, 10, 20),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Judul dan logout
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 261,
+                            child: Text(
+                              'SISTEM PENDAFTARAN KKN',
+                              style: TextStyle(
+                                  fontSize: 10 * mdsizepixel,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white),
+                            ),
+                          ),
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: const BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(25.0)),
+                            ),
+                            child: SizedBox(
+                              width: 17.1,
+                              height: 18.4,
+                              child: IconButton(
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                icon: const Icon(Icons.logout_outlined),
+                                color: Colors.white,
+                                iconSize: 20,
+                              ),
+                            ),
+                          ),
+                        ]),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          width: 261,
-                          child: Text(
-                            'SISTEM LAPORAN KKN',
-                            style: GoogleFonts.getFont(
-                              'Alumni Sans',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 28,
-                              height: 1.4,
-                              color: bluedark,
-                            ),
-                          ),
-                        ),
+                        // -----------data informasi pengguna-----------------
                         Container(
-                          width: 40,
-                          height: 40,
+                          margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          padding: const EdgeInsets.all(15),
                           decoration: const BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(25.0)),
-                          ),
+                              gradient: LinearGradient(
+                                begin: Alignment.topRight,
+                                end: Alignment.bottomLeft,
+                                colors: [
+                                  Colors.white,
+                                  Colors.white,
+                                ],
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0))),
                           child: SizedBox(
-                            width: 17.1,
-                            height: 18.4,
-                            child: IconButton(
-                              onPressed: () {
-                                Get.toNamed('login');
-                              },
-                              icon: const Icon(Icons.logout_outlined),
-                              color: bluedark,
-                              iconSize: 20,
+                            height: 70,
+                            width: 170,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      height: 60,
+                                      width: 60,
+                                      margin: const EdgeInsets.fromLTRB(
+                                          0, 0, 10, 0),
+                                      decoration: BoxDecoration(
+                                          color: bluedark,
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(30))),
+                                      child: const Icon(
+                                        CupertinoIcons.person_solid,
+                                        color: Colors.white,
+                                        size: 45.0,
+                                      ),
+                                    ),
+                                    Obx(() {
+                                      final mahasiswaValue =
+                                          controller.mahasiswa.value;
+                                      return mahasiswaValue != null &&
+                                              mahasiswaValue.ID_Mahasiswa !=
+                                                  null
+                                          ? _DataMahasiswa(
+                                              controller.mahasiswa.value!)
+                                          : const Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                    })
+                                    // data mahasiswa d kolom
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ]),
-                ),
-                // -----------data informasi pengguna-----------------
-                Container(
-                  margin: const EdgeInsets.fromLTRB(0, 20, 0, 10),
-                  padding: const EdgeInsets.all(26),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft,
-                        colors: [
-                          bluelight,
-                          bluedark,
-                        ],
-                      ),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(10.0))),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 60,
-                        width: 60,
-                        margin: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                        decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(30))),
-                        child: const Icon(Icons.people_alt_outlined),
-                      ),
-                      Container(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              child: Text(
-                                'Ujang sutisna',
-                                style: GoogleFonts.getFont(
-                                  'Alumni Sans',
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 20,
-                                  color: const Color(0xFFFFFFFF),
-                                ),
-                              ),
+                        //--------------------Menu-----------------------
+                        Expanded(
+                          child: Container(
+                            height: 120,
+                            padding: const EdgeInsets.fromLTRB(10, 20, 0, 0),
+                            child: ListView(
+                              scrollDirection: Axis
+                                  .horizontal, // Tetapkan untuk menggulir secara horizontal
+                              children: [
+                                _Menu_KKN(
+                                    'Kelompok',
+                                    yellowglobal,
+                                    Colors.white,
+                                    CupertinoIcons.group_solid,
+                                    ''),
+                                _Menu_KKN('Daftar KKN', Colors.white, bluedark,
+                                    CupertinoIcons.square_list, 'daftarkkn'),
+                                // Tambahkan item menu ke dalam ListView
+                                // Tambahkan item menu ke dalam ListView
+                                _Menu_KKN(
+                                    'Laporan',
+                                    greenglo,
+                                    Colors.white,
+                                    CupertinoIcons.doc_plaintext,
+                                    ''), // Tambahkan item menu ke dalam ListView // Tambahkan item menu ke dalam ListView
+                                // Tambahkan item menu lainnya sesuai kebutuhan
+                              ],
                             ),
-                            SizedBox(
-                              child: Text(
-                                '1121130123',
-                                style: GoogleFonts.getFont(
-                                  'Alumni Sans',
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: const Color(0xFFFFFFFF),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              child: Text(
-                                'Teknik Informatika - SE',
-                                style: GoogleFonts.getFont(
-                                  'Alumni Sans',
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: const Color(0xFFFFFFFF),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                //--------------------Menu-----------------------
-                Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.fromLTRB(0, 10, 0, 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment
-                        .spaceEvenly, // Tetapkan untuk menggulir secara horizontal
-                    children: [
-                      _Menu_KKN(
-                          'Daftar KKN', bluelight, bluelight, Icons.person),
-                      // Tambahkan item menu ke dalam ListView
-                      _Menu_KKN(
-                          'Kelompok',
-                          yellowglobal,
-                          yellowglobal,
-                          Icons
-                              .people), // Tambahkan item menu ke dalam ListView
-                      _Menu_KKN(
-                          'Laporan',
-                          redglobal,
-                          redglobal,
-                          Icons
-                              .call_received), // Tambahkan item menu ke dalam ListView // Tambahkan item menu ke dalam ListView
-                      // Tambahkan item menu lainnya sesuai kebutuhan
-                    ],
-                  ),
-                )
-              ]),
+                          ),
+                        )
+                      ],
+                    ),
+                  ]),
             ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              child: Text(
-                'Jadwal KKN/KKP',
-                style: GoogleFonts.getFont(
-                  'Alumni Sans',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 23,
-                  height: 1.9,
-                  color: bluedark,
+
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 2),
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15.0),
+                      topRight: Radius.circular(15.0),
+                    )),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Text(
+                        'Agenda KKN',
+                        style: TextStyle(
+                    fontSize: 12*mdsizepixel,
+                    fontWeight: FontWeight.w600,
+                    color: bluedark)
+                      ),
+                    ),
+                    Divider(),
+                    SizedBox(
+                        width: double.infinity,
+                        height: mdsize.height * 0.6,
+                        child: Obx(() {
+                          return controller.agendalist.isEmpty
+                              ? const Center(child: CircularProgressIndicator())
+                              : ListView.builder(
+                                  itemCount: controller.agendalist.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final agenda = controller.agendalist[index];
+                                    return _Jadwal_KKN(agenda.Nama_Agenda,
+                                        agenda.Tgl_Pelaksanaan, agenda.Periode);
+                                  },
+                                );
+                        })),
+                  ],
                 ),
               ),
-            ),
-            Container(
-              margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-              width: double.infinity,
-              height: 300,
-              child: ListView(scrollDirection: Axis.vertical, children: [
-                _Jadwal_KKN(
-                    'Pendaftaran KKN', '01 -25 januari 2024', '2023/2024'),
-                _Jadwal_KKN(
-                    'Pelaksaan KKN', 'Febuari - juli 2024', '2023/2024'),
-                _Jadwal_KKN(
-                    'Batas Laporan KKN', '30 - 31 agustus 2024', '2023/2024'),
-                _Jadwal_KKN(
-                    'Jadwal Sidang KKN', '16 - 21 September 2024', '2023/2024'),
-                SizedBox(
-                  height: 20,
-                )
-              ]),
             )
           ],
         ),
@@ -206,39 +222,42 @@ class BerandaView extends GetView<BerandaController> {
     ));
   }
 
-  _Menu_KKN(String judul, Color colorText, colorbg, IconData icon) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-              height: 60,
-              width: 60,
-              margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-              decoration: BoxDecoration(
-                color: colorbg,
-                borderRadius: BorderRadius.circular(35),
-              ),
-              child: Icon(
-                icon,
-                color: Colors.white,
-              )),
-          Container(
-            margin: const EdgeInsets.fromLTRB(9.4, 0, 9.4, 0),
-            child: Text(
-              judul,
-              style: GoogleFonts.getFont(
-                'Alumni Sans',
-                fontWeight: FontWeight.w400,
-                fontSize: 18,
-                height: 1.1,
-                color: colorText,
+  _Menu_KKN(String judul, colorbg, coloricon, IconData icon, String page) {
+    return GestureDetector(
+      onTap: () {
+        Get.toNamed(page);
+      },
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(0, 0, 17, 0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+                height: 60,
+                width: 60,
+                margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                decoration: BoxDecoration(
+                  color: colorbg,
+                  borderRadius: BorderRadius.circular(35),
+                ),
+                child: Icon(
+                  icon,
+                  color: coloricon,
+                  size: 35.0,
+                )),
+            Container(
+              margin: const EdgeInsets.fromLTRB(9.4, 0, 9.4, 0),
+              child: Text(
+                judul,
+                style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -247,10 +266,10 @@ class BerandaView extends GetView<BerandaController> {
     return Container(
       width: double.infinity,
       height: 100,
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
       decoration: BoxDecoration(
           border: Border.all(
-            color: Color.fromARGB(255, 197, 197, 197),
+            color: bluedark,
             width: 1,
           ),
           borderRadius: const BorderRadius.all(Radius.circular(15))),
@@ -260,34 +279,82 @@ class BerandaView extends GetView<BerandaController> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            judul,
-            style: GoogleFonts.getFont('Alumni Sans',
-                fontWeight: FontWeight.w600, fontSize: 18),
-          ),
-          SizedBox(
+          Text(judul,
+              style: TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w600, color: bluedark)),
+          const SizedBox(
             height: 5,
           ),
-          Text(tglpelaksanaan,
-              style: GoogleFonts.getFont('Alumni Sans',
-                  fontWeight: FontWeight.w300, fontSize: 16)),
-          Divider(),
+          Text(
+            tglpelaksanaan,
+            style: TextStyle(
+                fontSize: 12, fontWeight: FontWeight.w300, color: bluedark),
+          ),
+          const Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Tahun Ajaran',
-                  style: GoogleFonts.getFont('Alumni Sans',
-                      fontWeight: FontWeight.w300, fontSize: 16)),
+              Text(
+                'Tahun Ajaran',
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w300,
+                    color: bluedark),
+              ),
               Text(
                 tahunajar,
-                style: GoogleFonts.getFont('Alumni Sans',
-                    fontWeight: FontWeight.w300, fontSize: 16),
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w300,
+                    color: bluedark),
               )
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _DataMahasiswa(Mahasiswa mahasiswa) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          child: Text(
+            mahasiswa.Nama_Mahasiswa,
+            style: GoogleFonts.getFont(
+              'Alumni Sans',
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+              color: bluedark,
+            ),
+          ),
+        ),
+        SizedBox(
+          child: Text(
+            mahasiswa.Prodi.Nama_Prodi,
+            style: GoogleFonts.getFont(
+              'Alumni Sans',
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+              color: bluedark,
+            ),
+          ),
+        ),
+        SizedBox(
+          child: Text(
+            '${mahasiswa.ID_Mahasiswa}',
+            style: GoogleFonts.getFont(
+              'Alumni Sans',
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+              color: bluedark,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,0 +1,76 @@
+{
+    "mahasiswa": [
+    {
+    "ID_Mahasiswa"      : "1121130123",
+    "Nama_Mahasiswa"    : "Ujang sutisna",
+    "Tanggal_Lahir"     : "01/02/2002",
+    "Alamat"            : "Kp sangiang 006/002 Ds sangiang Kec Sepatan Timur Kab Tangerang",
+    "Nomor_Telp"        : "089639902328",
+    "ID_Gender"         : {
+        "ID_Gender"     : "1",
+        "Nama_Gender"   : "Laki Laki"
+    },
+    "ID_Kelas"          : {
+        "ID_Kelas"      : "2",
+        "Nama_Kelas"    : "TISE21SH",
+        "Nama_PA"       : "Nunung nurmaesah"
+    }, "Prodi"             : {
+        "ID_Prodi"      : "1",
+        "Nama_Prodi"    : "Teknik Informatika"
+    }
+    },
+    {
+    "ID_Mahasiswa"      : "112112322",
+    "Nama_Mahasiswa"    : "Rhafael bijaksana",
+    "Tanggal_Lahir"     : "bijaksana",
+    "Alamat"            : "Kp sangiang 006/002 Ds sangiang Kec Sepatan Timur Kab Tangerang",
+    "Nomor_Telp"        : "089639902328",
+    "ID_Gender"         : {
+        "ID_Gender"     : "1",
+        "Nama_Gender"   : "Laki Laki"
+    },
+    "ID_Kelas"          : {
+        "ID_Kelas"      : "2",
+        "Nama_Kelas"    : "TISE21SH",
+        "Nama_PA"       : "Nunung nurmaesah"
+    }, "Prodi"             : {
+        "ID_Prodi"      : "1",
+        "Nama_Prodi"    : "Teknik Informatika"
+    }
+
+    }
+    
+    ],
+    
+    "AgendaKKN":[
+    {
+    "ID_Agenda" : "1121137583",
+    "Nama_Agenda" : "Pelaksaan KKN",
+    "Tgl_Pelaksanaan" : "Februari - maret",
+    "Periode" : "2023-2024"
+    },
+    {
+    "ID_Agenda" : "6444777",
+    "Nama_Agenda" : "Pelaksaan KKN",
+    "Tgl_Pelaksanaan" : "Februari - maret",
+    "Periode" : "2023-2024"
+    },
+    {
+    "ID_Agenda" : "6643366",
+    "Nama_Agenda" : "Pelaksaan KKN",
+    "Tgl_Pelaksanaan" : "Februari - maret",
+    "Periode" : "2023-2024"
+    },
+    {
+    "ID_Agenda" : "7775599",
+    "Nama_Agenda" : "Pelaksaan KKN",
+    "Tgl_Pelaksanaan" : "Februari - maret",
+    "Periode" : "2023-2024"
+    },
+    {
+    "ID_Agenda" : "1121130123",
+    "Nama_Agenda" : "Pelaksaan KKN",
+    "Tgl_Pelaksanaan" : "Februari - maret",
+    "Periode" : "2023-2024"
+    }]
+}

@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
-class LoginController extends GetxController {
-  //TODO: Implement LoginController
-  final loginformKey = GlobalKey<FormState>();
+class UbahPasswordController extends GetxController {
+  //TODO: Implement UbahPasswordController
+  final formkey = GlobalKey<FormState>();
+  
   final count = 0.obs;
   @override
   void onInit() {
@@ -17,8 +18,6 @@ class LoginController extends GetxController {
 
   @override
   void onClose() {
-    loginformKey.currentState?.dispose();
-    loginformKey.currentState?.reset();
     super.onClose();
   }
 
