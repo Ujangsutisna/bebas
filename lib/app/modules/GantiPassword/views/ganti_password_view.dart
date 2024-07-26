@@ -15,7 +15,6 @@ class GantiPasswordView extends GetView<GantiPasswordController> {
   @override
   Widget build(BuildContext context) {
     final Size mediaquerysize = MediaQuery.of(context).size;
-    final double mediaquerypixel = MediaQuery.of(context).devicePixelRatio;
     var bluedark = const Color(0xff2b3f85);
     var bluelight = const Color(0xff32529f);
     // var yellowglobal = const Color(0xfff8ab1d);
@@ -32,23 +31,26 @@ class GantiPasswordView extends GetView<GantiPasswordController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          icon: const Icon(
-                            CupertinoIcons.arrow_left,
-                            color: Colors.white,
-                            size: 30,
-                          )),
-                      Text('Lupa Password',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 12 * mediaquerypixel,
-                              color: Colors.white))
-                    ],
+                  Container(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: Row(
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            icon: const Icon(
+                              CupertinoIcons.arrow_left,
+                              color: Colors.white,
+                              size: 20,
+                            )),
+                        const Text('Lupa Password',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 19,
+                                color: Colors.white))
+                      ],
+                    ),
                   ),
                   Container(
                     margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -77,7 +79,12 @@ class GantiPasswordView extends GetView<GantiPasswordController> {
                       Text(' Lupa Password ?',
                           style: TextStyle(
                               fontWeight: FontWeight.w800,
-                              fontSize: 10 * mediaquerypixel,
+                              fontSize: 22,
+                              color: bluedark)),
+                      Text(' Masukan email valid terdaftar ',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
                               color: bluedark)),
                       const SizedBox(
                         height: 10,
@@ -108,6 +115,9 @@ class GantiPasswordView extends GetView<GantiPasswordController> {
           return null;
         },
         controller: email,
+        cursorHeight: 5.0,
+        cursorWidth: 5.0,
+        cursorRadius: const Radius.circular(50),
       ),
     );
   }
@@ -135,6 +145,4 @@ class GantiPasswordView extends GetView<GantiPasswordController> {
           ),
         ));
   }
-
-
 }

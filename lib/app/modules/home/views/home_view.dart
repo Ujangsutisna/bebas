@@ -1,3 +1,8 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:bebas/app/data/Helpers/user_info.dart';
+import 'package:bebas/app/data/user_model.dart';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -6,793 +11,400 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../controllers/home_controller.dart';
 
+var bluedark = const Color(0xff2b3f85);
+var bluelight = const Color(0xff32529f);
+var yellowglobal = const Color.fromRGBO(248, 171, 29, 1);
+var redglobal = const Color(0xffea1e35);
+var greenglo = const Color(0xff06880b);
+
 class HomeView extends GetView<HomeController> {
   const HomeView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final Size mdsize = MediaQuery.of(context).size;
     return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.fromLTRB(0, 37, 0, 6),
+      body: Container(height:mdsize.height,
+        child: Stack(
+          children: [
+            Positioned(
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(15, 20, 15, 10),
+                width: double.infinity,
+                height: 240,
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(6),
+                        bottomRight: Radius.circular(6)),
+                    gradient: LinearGradient(
+                      colors: [Color(0xff3f5efb), Color(0xff2e4a94)],
+                      stops: [0.2, 0.7],
+                      begin: Alignment(-0.0, 1.0),
+                      end: Alignment(-0.0, -0.9),
+                    )),
+                child: Column(children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          width: 261,
+                          child: AutoSizeText(
+                            'SISTEM PENDAFTARAN KKN',
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white),
+                          ),
+                        ),
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                          ),
+                          child: SizedBox(
+                            width: 17.1,
+                            height: 18.4,
+                            child: IconButton(
+                              onPressed: () {
+                                UserInfo().logout();
+                                Get.offAllNamed('login');
+                              },
+                              icon: const Icon(
+                                CupertinoIcons.bell_fill,
+                              ),
+                              color: Colors.white,
+                              iconSize: 20,
+                            ),
+                          ),
+                        ),
+                      ]),
+                  const SizedBox(height: 20),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const Icon(
+                        CupertinoIcons.person_crop_circle_fill,
+                        color: Colors.white,
+                        size: 60.0,
+                      ),
+                      const SizedBox(width: 15),
+                      Obx(() {
+                        if (controller.dataUser.value.ID == null) {
+                          return Container(
+                              child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                              TextButton(
+                                  onPressed: () {
+                                    controller.LoadData();
+                                  },
+                                  child: const Text('Refresh',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w400)))
+                            ],
+                          ));
+                        } else if (controller.dataUser.value.nama != null) {
+                          print('ID :::: ${controller.dataUser.value.ID}');
+                          return _DataUser(controller.dataUser.value);
+                        } else {
+                          return const Text('No data');
+                        }
+                      })
+                    ],
+                  ),
+                ]),
+              ),
+            ),
+            Positioned(
+                right: 20,
+                left: 20,
+                top: 165,
+                child: Center(
+                  child: Container(
+                    height: 130,
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: Colors.white),
+                    width: mdsize.width,
+                    padding: const EdgeInsets.all(5),
+                    child: Obx(() {
+                      final userType = controller.userType.value;
+                      return Center(
+                        child: Wrap(
+                          spacing: 2.0, // jarak horizontal antar anak
+                          runSpacing: 9.0, // jarak vertikal antar baris
+                          alignment: WrapAlignment.start,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          runAlignment: WrapAlignment.center,
+                          children: [
+                            if (userType == 'mahasiswa')
+                              _Menu_KKN("Daftar KKN", bluedark,
+                                  CupertinoIcons.list_bullet,
+                                  isDaftar: true), // --------- Mahasiswa
+                            if (userType == 'mahasiswa')
+                              _Menu_KKN("Program Kerja", greenglo,
+                                  Icons.post_add_rounded,
+                                  isProgram: true), // --------- Mahasiswa
+                            if (userType == 'mahasiswa')
+                              _Menu_KKN("Kelompok", yellowglobal, Icons.group,
+                                  page: ''), // --------- Mahasiswa
+                            if (userType == 'mahasiswa')
+                              _Menu_KKN("Laporan", bluedark, Icons.book,
+                                  isLaporan: true), // --------- Mahasiswa
+                            if (userType == 'dosen_pembimbing')
+                              _Menu_KKN("Approve", bluedark, Icons.list_alt_sharp,
+                                  page: ''), // --------- Dospem
+                            if (userType == 'dosen_pembimbing')
+                              _Menu_KKN('Kelompok', yellowglobal, Icons.group,
+                                  isProgramDospem: true), // --------- Dospem
+                            _Menu_KKN("Logout", redglobal, Icons.logout_outlined,
+                                isBack: true),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+                )),
+            Obx(() {
+              final userType = controller.userType.value;
+              return userType == 'mahasiswa'
+                  ? Positioned(
+                      top: 300,
+                      child: SizedBox(
+                        width: mdsize.width,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Informasi Lainnya',
+                                style: TextStyle(
+                                    color: bluedark,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600)),
+                            const Divider(),
+                            Obx(() {
+                              final currenStep =
+                                  controller.currentIndexPageView.value;
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  MaterialButton(
+                                      onPressed: () {
+                                        controller.btnPageChanged(0);
+                                      },
+                                      child: Icon(Icons.list_rounded,
+                                          color: currenStep == 0
+                                              ? bluedark
+                                              : const Color.fromARGB(
+                                                  255, 233, 232, 232))),
+                                  MaterialButton(
+                                      onPressed: () {
+                                        controller.btnPageChanged(1);
+                                      },
+                                      child: Icon(Icons.post_add_sharp,
+                                          color: currenStep == 1
+                                              ? bluedark
+                                              : const Color.fromARGB(
+                                                  255, 233, 232, 232))),
+                                  MaterialButton(
+                                      onPressed: () {
+                                        controller.btnPageChanged(2);
+                                      },
+                                      child: Icon(Icons.date_range,
+                                          color: currenStep == 2
+                                              ? bluedark
+                                              : const Color.fromARGB(
+                                                  255, 233, 232, 232))),
+                                ],
+                              );
+                            }),
+                            Container(
+                              height: 200,
+                                  child: _pageViewBeranda(),                  )
+                          ],
+                        ),
+                      ))
+                  : const SizedBox();
+            })
+          ],
+        ),
+      ),
+    );
+  }
+
+  _pageViewBeranda() {
+  
+    return PageView(
+      controller: controller.PageViewCtrl,
+      onPageChanged: ((value) {
+        controller.onPageChanged(value);
+      }),
+      children: const [
+
+        Text('k'),
+        Text('k'),
+        Text('k'),
+        Text('h'),
+      ],
+    );
+  }
+
+  _Menu_KKN(String judul, color, IconData icon,
+      {String? page,
+      bool isBack = false,
+      bool isDaftar = false,
+      bool isProgram = false,
+      bool isProgramDospem = false,
+      bool isLaporan = false}) {
+    final user = controller.dataUser.value.nama;
+    return Container(
+      width: 90,
+      child: GestureDetector(
+        onTap: () {
+          if (isBack) {
+            _DialogKeluar();
+          } else if (isDaftar && user!.isNotEmpty) {
+            final kelompok = controller.Kelompok;
+            if (kelompok.value.idKelompok != null &&
+                kelompok.value.approve != 'reject') {
+              Get.toNamed('review', arguments: kelompok.value);
+            } else {
+              Get.toNamed('daftarkkn');
+            }
+          } else if (isProgram && user!.isNotEmpty) {
+            _isProgram();
+          } else if (isLaporan && user!.isNotEmpty) {
+            final kelompok = controller.Kelompok.value;
+            Get.toNamed('laporan', arguments: kelompok);
+          } else if (page != null) {
+            Get.toNamed(page);
+          } else if (user!.isEmpty) {
+            Get.snackbar('Maaf', 'Data tidak di temukan',
+                backgroundColor: Colors.red, colorText: Colors.white);
+          } else if (isProgramDospem) {
+            Get.toNamed('kelompok-dospem',
+                arguments: controller.dataUser.value);
+          }
+        },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              margin: const EdgeInsets.fromLTRB(0, 0, 2, 13.6),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFFFFFFF),
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.fromLTRB(15, 8, 15, 1),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(0, 0, 13, 12),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin:
-                                      const EdgeInsets.fromLTRB(0, 0, 19, 0),
-                                  child: SizedBox(
-                                    width: 261,
-                                    child: Text(
-                                      'SISTEM PENDAFTARAN KKN',
-                                      style: GoogleFonts.getFont(
-                                        'Alumni Sans',
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 28,
-                                        height: 1.4,
-                                        color: const Color(0xFF587DC4),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 1, 0, 2),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF587DC4),
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    child: Container(
-                                      width: 35,
-                                      height: 35,
-                                      padding: const EdgeInsets.fromLTRB(
-                                          6, 10, 11.9, 6.6),
-                                      child: const SizedBox(
-                                        width: 17.1,
-                                        height: 18.4,
-                                        child: Icon(Icons.people),
-                                      ),
-                                    ), 
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(0, 0, 0, 12),
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  left: -23,
-                                  right: -17,
-                                  top: -17,
-                                  bottom: -30,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(16),
-                                    child: const SizedBox(
-                                      width: 328,
-                                      height: 116,
-                                      child: Icon(Icons.abc),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 328,
-                                  child: Container(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        23, 17, 17, 30),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              margin: const EdgeInsets.fromLTRB(
-                                                  0, 3, 12, 6),
-                                              child: const SizedBox(
-                                                width: 60,
-                                                height: 60,
-                                                child: Icon(Icons.abc),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 69,
-                                              child: Stack(
-                                                children: [
-                                                  Text(
-                                                    'Ujang sutisna',
-                                                    style: GoogleFonts.getFont(
-                                                      'Alumni Sans',
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 20,
-                                                      height: 1.9,
-                                                      color: const Color(
-                                                          0xFFFFFFFF),
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    left: 0,
-                                                    bottom: 14,
-                                                    child: SizedBox(
-                                                      height: 38,
-                                                      child: Text(
-                                                        '1121130123',
-                                                        style:
-                                                            GoogleFonts.getFont(
-                                                          'Alumni Sans',
-                                                          fontWeight:
-                                                              FontWeight.w300,
-                                                          fontSize: 14,
-                                                          height: 2.7,
-                                                          color: const Color(
-                                                              0xFFFFFFFF),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    left: 0,
-                                                    bottom: 0,
-                                                    child: SizedBox(
-                                                      height: 38,
-                                                      child: Text(
-                                                        'Teknik Informatika',
-                                                        style:
-                                                            GoogleFonts.getFont(
-                                                          'Alumni Sans',
-                                                          fontWeight:
-                                                              FontWeight.w300,
-                                                          fontSize: 14,
-                                                          height: 2.7,
-                                                          color: const Color(
-                                                              0xFFFFFFFF),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Container(
-                                          margin: const EdgeInsets.fromLTRB(
-                                              0, 24, 0, 24),
-                                          child: Container(
-                                            
-                                            child: Container(
-                                              width: 21,
-                                              height: 21,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFEDECEC),
-                                        borderRadius: BorderRadius.circular(50),
-                                      ),
-                                      child: Container(
-                                        width: 70,
-                                        height: 70,
-                                        child: const Positioned(
-                                          left: 19.9,
-                                          top: 12,
-                                          child: SizedBox(
-                                            width: 29.3,
-                                            height: 43.4,
-                                            child: Icon(Icons.abc),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.fromLTRB(
-                                          3.5, 0, 9.1, 0),
-                                      child: Text(
-                                        'Daftar KKN',
-                                        style: GoogleFonts.getFont(
-                                          'Alumni Sans',
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 18,
-                                          height: 2.1,
-                                          color: const Color(0xFF000000),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 9),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        margin: const EdgeInsets.fromLTRB(
-                                            0, 0, 0, 9),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFFEDECEC),
-                                            borderRadius:
-                                                BorderRadius.circular(35),
-                                          ),
-                                          child: Container(
-                                            width: 70,
-                                            height: 70,
-                                            child: const Positioned(
-                                              left: 8.5,
-                                              bottom: 19.7,
-                                              child: SizedBox(
-                                                width: 52.4,
-                                                height: 30.3,
-                                                child: Icon(Icons.abc),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        margin: const EdgeInsets.fromLTRB(
-                                            9.4, 0, 9.4, 0),
-                                        child: Text(
-                                          'Kelompok',
-                                          style: GoogleFonts.getFont(
-                                            'Alumni Sans',
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 18,
-                                            height: 1.1,
-                                            color: const Color(0xFF313131),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 9),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        margin: const EdgeInsets.fromLTRB(
-                                            0, 0, 0, 9),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFFEDECEC),
-                                            borderRadius:
-                                                BorderRadius.circular(35),
-                                          ),
-                                          child: Container(
-                                            width: 70,
-                                            height: 70,
-                                            child: const Positioned(
-                                              right: 18.4,
-                                              bottom: 15.2,
-                                              child: SizedBox(
-                                                width: 31.6,
-                                                height: 36.8,
-                                                child: Icon(Icons.abc),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        margin: const EdgeInsets.fromLTRB(
-                                            13, 0, 14.6, 0),
-                                        child: Text(
-                                          'Laporan',
-                                          style: GoogleFonts.getFont(
-                                            'Alumni Sans',
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 18,
-                                            height: 1.1,
-                                            color: const Color(0xFF313131),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(0, 0, 3, 4.1),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                top: 0.1,
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFFFFFFFF),
-                                  ),
-                                  child: Container(
-                                    width: 325,
-                                    height: 29,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                child: Text(
-                                  'Penjadwalan KKN/KKP',
-                                  style: GoogleFonts.getFont(
-                                    'Alumni Sans',
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 23,
-                                    height: 1.7,
-                                    color: const Color(0xFF000000),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(0, 0, 0, 13),
-                          child: Stack(
-                            children: [
-                              const Positioned(
-                                left: -14.4,
-                                right: -14.4,
-                                top: -13,
-                                bottom: -6.1,
-                                child: SizedBox(
-                                  width: 328,
-                                  height: 105.1,
-                                  child: Icon(Icons.abc),
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.fromLTRB(
-                                    14.4, 13, 14.4, 6.1),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.fromLTRB(
-                                          0.1, 0, 0.1, 6),
-                                      child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          'Pendaftaran KKN',
-                                          style: GoogleFonts.getFont(
-                                            'Roboto Condensed',
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14,
-                                            height: 1.4,
-                                            color: const Color(0xFF313131),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.fromLTRB(
-                                          0.1, 0, 0.1, 12.9),
-                                      child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          '01 - 15 Mei 2024',
-                                          style: GoogleFonts.getFont(
-                                            'Roboto Condensed',
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 14,
-                                            height: 1.3,
-                                            color: const Color(0xFF777777),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.fromLTRB(
-                                          0, 0, 0, 8.2),
-                                      child: Container(
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xFFDBDBDB),
-                                        ),
-                                        child: Container(
-                                          width: 299.3,
-                                          height: 1,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.fromLTRB(
-                                          0.1, 0, 13.3, 0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            margin: const EdgeInsets.fromLTRB(
-                                                0, 0, 9, 2),
-                                            child: SizedBox(
-                                              width: 215.9,
-                                              child: Text(
-                                                'Gelombang 1',
-                                                style: GoogleFonts.getFont(
-                                                  'Roboto Condensed',
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 14,
-                                                  height: 1.3,
-                                                  color:
-                                                      const Color(0xFF777777),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Text(
-                                            '2024/2025',
-                                            style: GoogleFonts.getFont(
-                                              'Roboto Condensed',
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 14,
-                                              height: 1.4,
-                                              color: const Color(0xFF3A3A3A),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(0, 0, 10, 13),
-                          child: Stack(
-                            children: [
-                              const Positioned(
-                                left: -13.9,
-                                right: -13.9,
-                                top: -13,
-                                bottom: -6.1,
-                                child: SizedBox(
-                                  width: 318,
-                                  height: 105.1,
-                                  child: Icon(Icons.abc),
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.fromLTRB(
-                                    13.9, 13, 13.9, 6.1),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.fromLTRB(
-                                          0.1, 0, 0.1, 6),
-                                      child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          'Pendaftaran KKN',
-                                          style: GoogleFonts.getFont(
-                                            'Roboto Condensed',
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14,
-                                            height: 1.4,
-                                            color: const Color(0xFF313131),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(0, 0, 10, 13),
-                          child: Stack(
-                            children: [
-                              const Positioned(
-                                left: -13.9,
-                                right: -13.9,
-                                top: -13,
-                                bottom: -6.1,
-                                child: SizedBox(
-                                    width: 318,
-                                    height: 105.1,
-                                    child: Icon(Icons.abc)),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.fromLTRB(
-                                    13.9, 13, 13.9, 6.1),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.fromLTRB(
-                                          0.1, 0, 0.1, 6),
-                                      child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          'Pelaksanaan KKN',
-                                          style: GoogleFonts.getFont(
-                                            'Roboto Condensed',
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14,
-                                            height: 1.4,
-                                            color: const Color(0xFF313131),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.fromLTRB(
-                                          0.1, 0, 0.1, 12.9),
-                                      child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          '01 Juli - Agustus 2024',
-                                          style: GoogleFonts.getFont(
-                                            'Roboto Condensed',
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 14,
-                                            height: 1.3,
-                                            color: const Color(0xFF777777),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.fromLTRB(
-                                          0, 0, 0, 8.2),
-                                      child: Container(
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xFFDBDBDB),
-                                        ),
-                                        child: Container(
-                                          width: 290.2,
-                                          height: 1,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.fromLTRB(
-                                          0.1, 0, 11, 0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            margin: const EdgeInsets.fromLTRB(
-                                                0, 0, 9, 2),
-                                            child: SizedBox(
-                                              width: 209,
-                                              child: Text(
-                                                'xxxxxxx',
-                                                style: GoogleFonts.getFont(
-                                                  'Roboto Condensed',
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 14,
-                                                  height: 1.3,
-                                                  color:
-                                                      const Color(0xFF777777),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Text(
-                                            '2024/2025',
-                                            style: GoogleFonts.getFont(
-                                              'Roboto Condensed',
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 14,
-                                              height: 1.4,
-                                              color: const Color(0xFF3A3A3A),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                          child: Stack(
-                            children: [
-                              const Positioned(
-                                left: -13.9,
-                                right: -13.9,
-                                top: -13,
-                                bottom: -6.1,
-                                child: SizedBox(
-                                    width: 318,
-                                    height: 105.1,
-                                    child: Icon(Icons.on_device_training)),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.fromLTRB(
-                                    13.9, 13, 13.9, 6.1),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.fromLTRB(
-                                          0.1, 0, 0.1, 6),
-                                      child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          'Jadwal Sidang KKN',
-                                          style: GoogleFonts.getFont(
-                                            'Roboto Condensed',
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14,
-                                            height: 1.4,
-                                            color: const Color(0xFF313131),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.fromLTRB(
-                                          0.1, 0, 0.1, 12.9),
-                                      child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          '23 - 25 Oktober 2024',
-                                          style: GoogleFonts.getFont(
-                                            'Roboto Condensed',
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 14,
-                                            height: 1.3,
-                                            color: const Color(0xFF777777),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.fromLTRB(
-                                          0, 0, 0, 8.2),
-                                      child: Container(
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xFFDBDBDB),
-                                        ),
-                                        child: Container(
-                                          width: 290.2,
-                                          height: 1,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.fromLTRB(
-                                          0.1, 0, 11, 0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            margin: const EdgeInsets.fromLTRB(
-                                                0, 0, 9, 2),
-                                            child: SizedBox(
-                                              width: 209,
-                                              child: Text(
-                                                'Prodi Teknik Informatika',
-                                                style: GoogleFonts.getFont(
-                                                  'Roboto Condensed',
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 14,
-                                                  height: 1.3,
-                                                  color:
-                                                      const Color(0xFF777777),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Text(
-                                            '2024/2025',
-                                            style: GoogleFonts.getFont(
-                                              'Roboto Condensed',
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 14,
-                                              height: 1.4,
-                                              color: const Color(0xFF3A3A3A),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            Icon(
+              icon,
+              color: color,
+              size: 30.0,
             ),
             Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFFFFF),
-              ),
-              child: Container(
-                width: 360,
-                height: 27,
+              child: Text(
+                judul,
+                style: TextStyle(
+                    fontSize: 12, fontWeight: FontWeight.w400, color: color),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  _DialogKeluar() {
+    return Get.defaultDialog(
+        content: Column(
+          children: [
+            Icon(Icons.cancel_outlined, size: 80.0, color: redglobal),
+            const SizedBox(
+              height: 10,
+            ),
+            const Text('Apakah anda yakin?')
+          ],
+        ),
+        title: '',
+        cancel: MaterialButton(
+          color: greenglo,
+          onPressed: () async {
+            Get.back();
+          },
+          child: const Text('Batal', style: TextStyle(color: Colors.white)),
+        ),
+        textConfirm: 'Keluar',
+        confirm: MaterialButton(
+          color: redglobal,
+          onPressed: () async {
+            UserInfo().logout();
+            Get.offAllNamed('login');
+          },
+          child: const Text('Keluar', style: TextStyle(color: Colors.white)),
+        ));
+  }
+
+  _isProgram() {
+    final kelompok = controller.Kelompok;
+    if (kelompok.value.idKelompok != null &&
+        kelompok.value.approve == "approve") {
+      return Get.toNamed('programkerja', arguments: kelompok.value);
+    } else if (kelompok.value.idKelompok != null &&
+        kelompok.value.approve! == 'review') {
+      return _alertDialog('Maaf', 'Pendaftaran anda di review, Cek berkala');
+    } else if (kelompok.value.idKelompok != null &&
+        kelompok.value.approve! == 'reject') {
+      return _alertDialog(
+          'Maaf', 'Pendaftaran anda di tolak, Silahkan daftar ulang');
+    } else {
+      return _alertDialog('Maaf', 'Silahkan daftar terlebii dahulu');
+    }
+  }
+
+  _alertDialog(String title, String middletext) {
+    return Get.defaultDialog(
+        titleStyle: TextStyle(color: redglobal, fontWeight: FontWeight.w600),
+        title: title,
+        middleText: middletext,
+        radius: 10,
+        cancel: MaterialButton(
+          color: greenglo,
+          onPressed: () {
+            Get.back();
+          },
+          child: const Text('Kembali', style: TextStyle(color: Colors.white)),
+        ));
+  }
+
+  Widget _DataUser(DataUser user) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          child: AutoSizeText(
+            '${user.nama}',
+            style: GoogleFonts.getFont(
+              'Alumni Sans',
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        SizedBox(
+          child: AutoSizeText(
+            '${user.email}',
+            style: GoogleFonts.getFont(
+              'Alumni Sans',
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+              color: const Color.fromARGB(255, 244, 244, 244),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

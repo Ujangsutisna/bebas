@@ -1,0 +1,32 @@
+{"KelompokGet":[
+    {
+        "id_kelompok": 1,
+        "id_dospem": null,
+        "nim_ketua_kelompok": "11211300014",
+        "approve": "review",
+        "lokasi_kkn": "Sangiang 006/002 Sangiang Sepatan timur Tangerang",
+        "jenis": "KKN",
+        "penanggung_jawab": "Budi",
+        "nomor_telephone_penanggung_jawab": "08967564654",
+        "tanggal_mulai": "2024-03-03",
+        "tanggal_akhir": "2024-06-03",
+        "created_at": "2024-07-15T03:57:36.000000Z",
+        "updated_at": "2024-07-15T03:57:36.000000Z",
+        "anggota": [
+            {
+                "id_anggota": 1,
+                "id_kelompok": 1,
+                "nim_mahasiswa": "11211300013",
+                "created_at": "2024-07-15T03:57:36.000000Z",
+                "updated_at": "2024-07-15T03:57:36.000000Z"
+            },
+            {
+                "id_anggota": 2,
+                "id_kelompok": 1,
+                "nim_mahasiswa": "11211300015",
+                "created_at": "2024-07-15T03:57:36.000000Z",
+                "updated_at": "2024-07-15T03:57:36.000000Z"
+            }
+        ]
+    }
+]}

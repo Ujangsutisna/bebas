@@ -1,7 +1,8 @@
+// ignore_for_file: non_constant_identifier_names, use_super_parameters
+
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../controllers/ubah_password_controller.dart';
 
@@ -11,13 +12,13 @@ var bluedark = const Color(0xff2b3f85);
 var bluelight = const Color(0xff32529f);
 // var yellowglobal = const Color(0xfff8ab1d);
 var redglobal = const Color(0xffea1e35);
+var greenglo = const Color(0xff06880b);
 
 class UbahPasswordView extends GetView<UbahPasswordController> {
   const UbahPasswordView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final Size mediaquerysize = MediaQuery.of(context).size;
-    final double mediaquerypixel = MediaQuery.of(context).devicePixelRatio;
     return WillPopScope(
       onWillPop: () async {
         // Kembalikan false untuk mencegah tombol "Back" berfungsi
@@ -75,14 +76,20 @@ class UbahPasswordView extends GetView<UbahPasswordController> {
                             padding: const EdgeInsets.only(bottom: 10),
                             child: Column(
                               children: [
-                                _Text('Ubah Password', FontWeight.w800,
-                                    14 * mediaquerypixel, bluedark),
-                                _Text('Masukan Password baru', FontWeight.w400,
-                                    9 * mediaquerypixel, bluedark)
+                                Text('Ubah password',
+                                    style: TextStyle(
+                                        color: bluedark,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w800)),
+                                Text('Masukan password baru',
+                                    style: TextStyle(
+                                        color: bluedark,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400))
                               ],
                             )),
-                        Divider(),
-                        SizedBox(height: 10),
+                        const Divider(),
+                        const SizedBox(height: 10),
                         _FielInput('Password', Password1),
                         _FielInput('Ulang Password', Password2),
                         SizedBox(
@@ -92,9 +99,10 @@ class UbahPasswordView extends GetView<UbahPasswordController> {
                             onPressed: () {
                               if (controller.formkey.currentState!.validate()) {
                                 if (Password1.text == Password2.text) {
-                                  Get.back();
+                                  Get.offAllNamed('login');
                                   Get.snackbar(
                                       'Berhasil', 'Password berhasil di ubah',
+                                      backgroundColor: greenglo,
                                       colorText: Colors.white);
                                 } else {
                                   Get.snackbar(
@@ -136,18 +144,9 @@ class UbahPasswordView extends GetView<UbahPasswordController> {
           return null;
         },
         controller: ctrl,
-      ),
-    );
-  }
-
-  _Text(String tittle, FontWeight fontweight, double size, Color color) {
-    return Text(
-      tittle,
-      style: GoogleFonts.getFont(
-        'Alumni Sans',
-        fontWeight: fontweight,
-        fontSize: size,
-        color: color,
+        cursorHeight: 5.0,
+        cursorWidth: 5.0,
+        cursorRadius: const Radius.circular(50),
       ),
     );
   }
