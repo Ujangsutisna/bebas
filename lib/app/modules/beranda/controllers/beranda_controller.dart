@@ -1,26 +1,40 @@
-import 'dart:convert';
+// ignore_for_file: non_constant_identifier_names, unnecessary_overrides
 
-import 'package:bebas/app/data/model/Agenda.dart';
-import 'package:bebas/app/data/model/Mahasiswa.dart';
-import 'package:flutter/services.dart';
+import 'package:bebas/app/data/Helpers/apiclient.dart';
+import 'package:bebas/app/data/Helpers/user_info.dart';
+import 'package:bebas/app/data/agenda_model.dart';
+import 'package:bebas/app/data/mahasiswa_model.dart';
+import 'package:bebas/app/data/kelompokget_model.dart';
+import 'package:bebas/app/data/user_model.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class BerandaController extends GetxController {
-  //TODO: Implement BerandaController
-  // late Mahasiswa mahasiswa;
+  Rx<Mahasiswa> mahasiswa = Mahasiswa().obs;
+  Rx<AllAgenda> allAgenda = AllAgenda().obs;
+  Rx<KelompokGet> Kelompok = KelompokGet().obs;
+  Rx<Allkelompokget> allKelompok = Allkelompokget().obs;
+  Rx<DataUser> dataUser = DataUser().obs;
+  List<dynamic> menuPageView = [
+    'Pendaftaran',
+    'Program kerja',
+    'bimbingan',
+  ];
+  var userType = ''.obs;
+  final PageViewCtrl = PageController();
+  var currentIndexPageView = 0.obs;
 
-  var mahasiswa = Rx<Mahasiswa?>(null);
-
-  var agendalist = <Agenda>[].obs;
   final count = 0.obs;
   @override
   void onInit() {
     super.onInit();
-    _LoadData();
+    LoadData();
+    fetchUserType();
   }
 
   @override
   void onReady() {
+    LoadData();
     super.onReady();
   }
 
@@ -29,55 +43,87 @@ class BerandaController extends GetxController {
     super.onClose();
   }
 
-  // ignore: non_constant_identifier_names
-  Future<void> _LoadData() async {
-    _loadMahasiswa();
-    _loadListAgenda();
+  void onPageChanged(int index) {
+    currentIndexPageView.value = index;
   }
 
-  Future<void> _loadMahasiswa() async {
-    try {
-      // Baca file JSON lokal
-      String jsonString =
-          await rootBundle.loadString('lib/app/data/json/data.json');
-      // Parsing JSON dan inisialisasi objek Mahasiswa
-      final jsonData = json.decode(jsonString);
+  void btnPageChanged(int index) {
+    PageViewCtrl.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+    currentIndexPageView.value = index;
+  }
 
-      final List<dynamic> mahasiswaData = jsonData['mahasiswa'];
+  void fetchUserType() async {
+    final userInfo = UserInfo();
+    userType.value = (await userInfo.getTypeAccount()) ?? '';
+  }
 
-      if (mahasiswaData[0] != null) {
-        final Mahasiswa mahasiswa1 = Mahasiswa.fromJson(mahasiswaData[0]);
-        mahasiswa.value = mahasiswa1;
-      } else {
-        print('data mahasiswa kosong');
-      }
-      // Perbarui UI setelah data dimuat
+  LoadData() async {
+    final userInfo = UserInfo();
+    final userID = await userInfo.getUserID();
+    final typeAccount = await userInfo.getTypeAccount();
 
-      update();
-    } catch (e) {
-      // Tangani kesalahan jika ada
-      print("Error: $e");
+    print('Type akun ::: $typeAccount');
+    LoadDataUser();
+    if (typeAccount == 'mahasiswa') {
+      _LoadKelompok(userID!);
+      _LoadProgramKerja();
     }
   }
 
-  Future<void> _loadListAgenda() async {
+  LoadDataUser() async {
     try {
-      // Baca file JSON lokal
-      String jsonString =
-          await rootBundle.loadString('lib/app/data/json/data.json');
-      // Parsing JSON dan inisialisasi objek Mahasiswa
-
-      final jsonData = json.decode(jsonString)['AgendaKKN'] as List<dynamic>;
-
-      final List<Agenda> agendas =
-          jsonData.map((item) => Agenda.fromJson(item)).toList();
-      agendalist.assignAll(agendas);
-
-      // Perbarui UI setelah data dimuat
-      update();
+      final response = await ApiClient().get('api/auth/user');
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        dataUser.value = DataUser.fromJson(response.data['data']['summary']);
+        print(dataUser.value.email);
+      } else {}
     } catch (e) {
-      // Tangani kesalahan jika ada
-      print("Error: $e");
+      print('Error load user: $e');
+    }
+  }
+
+  _LoadProgramKerja() async {
+    try {
+      final response = await ApiClient().get('api/program-kerja');
+
+      List<dynamic> dataArray = response.data;
+
+      int lastIndex = dataArray.length;
+      Map<String, dynamic>? LastDataByIDKelompok;
+
+      for (int i = 0; i < lastIndex; i++) {
+        final kelompok = response.data[i]['id_kelompok'];
+        if (kelompok == Kelompok.value.idKelompok) {
+          LastDataByIDKelompok = response.data[i];
+        }
+      }
+      if (LastDataByIDKelompok != null) {
+        // print(
+        //     'DATA PROGRAM KERJA TERAKHIR YANG SESUAI :: $LastDataByIDKelompok');
+      } else {
+        // print('Tidak ada program kerja yang sesuai ditemukan');
+      }
+    } catch (e) {
+      print('Error load proker: $e');
+    }
+  }
+
+  _LoadKelompok(String userID) async {
+    try {
+      final response = await ApiClient().get('api/kelompok?nim=$userID');
+
+      List<dynamic> dataArray = response.data;
+      int lastIndex = dataArray.length - 1;
+
+      if (response.data != null) {
+        Kelompok.value = KelompokGet.fromJson(response.data[lastIndex]);
+      }
+    } catch (e) {
+      print('Error kelompok : $e');
     }
   }
 

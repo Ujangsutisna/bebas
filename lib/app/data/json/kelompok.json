@@ -1,0 +1,25 @@
+ [{
+        "anggota" : [
+            "11211300013",
+            "11211300012"
+        ] ,
+        "lokasi_kkn" :"legok Tangerang",
+        "jenis" : "kkn",
+        "penanggung_jawab" : "samsudin",
+        "nomor_telephone_penanggung_jawab" : "089889796",
+        "tanggal_mulai" : "2020-12-02",
+        "tanggal_akhir" : "2021-01-04"
+    }, 
+    {
+        "anggota" : [
+            "11211300013",
+            "11211300012"
+        ] ,
+        "lokasi_kkn" :"legok Tangerang",
+        "jenis" : "kkn",
+        "penanggung_jawab" : "samsudin",
+        "nomor_telephone_penanggung_jawab" : "089889796",
+        "tanggal_mulai" : "2020-12-02",
+        "tanggal_akhir" : "2021-01-04"
+    } ]
+        

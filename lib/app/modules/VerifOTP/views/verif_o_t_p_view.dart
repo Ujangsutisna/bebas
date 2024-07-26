@@ -1,10 +1,8 @@
-import 'package:bebas/app/routes/app_pages.dart';
+// ignore_for_file: non_constant_identifier_names, unused_element, use_super_parameters
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 import '../controllers/verif_o_t_p_controller.dart';
 
 final _otpformkey = GlobalKey<FormState>();
@@ -19,7 +17,6 @@ class VerifOTPView extends GetView<VerifOTPController> {
   @override
   Widget build(BuildContext context) {
     final Size mediaquerysize = MediaQuery.of(context).size;
-    final double mediaquerypixel = MediaQuery.of(context).devicePixelRatio;
 
     return Scaffold(
       body: Container(
@@ -29,24 +26,30 @@ class VerifOTPView extends GetView<VerifOTPController> {
         child: ListView(
           children: [
             Container(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          icon: const Icon(
-                            CupertinoIcons.arrow_left,
-                            color: Colors.white,
-                            size: 30,
-                          )),
-                      _Text('Verfikasi OTP', FontWeight.w600,
-                          14 * mediaquerypixel, Colors.white)
-                    ],
+                  Container(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: Row(
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            icon: const Icon(
+                              CupertinoIcons.arrow_left,
+                              color: Colors.white,
+                              size: 20,
+                            )),
+                        const Text('Verifikasi OTP',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 19,
+                                color: Colors.white))
+                      ],
+                    ),
                   ),
                   SizedBox(
                     child: Image.asset(
@@ -71,10 +74,16 @@ class VerifOTPView extends GetView<VerifOTPController> {
                   key: _otpformkey,
                   child: Column(
                     children: [
-                      _Text(' Verifikasi OTP ?', FontWeight.w800,
-                          14 * mediaquerypixel, bluedark),
-                      _Text('Masukan OTP yang sudah di kirm via Email',
-                          FontWeight.w400, 9 * mediaquerypixel, bluedark),
+                      Text('Verifikasi OTP ?',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 22,
+                              color: bluedark)),
+                      Text('Masukan OTP yang sudah di kirm via Email',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                              color: bluedark)),
                       const SizedBox(
                         height: 10,
                       ),
@@ -82,12 +91,18 @@ class VerifOTPView extends GetView<VerifOTPController> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _Text('Tidak Menerima kode?', FontWeight.w400,
-                              9 * mediaquerypixel, bluedark),
+                          Text('Tidak menerima kode ?',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: bluedark)),
                           TextButton(
                             onPressed: () {},
-                            child: _Text(' Kirim Ulang', FontWeight.w400,
-                                9 * mediaquerypixel, Colors.blue),
+                            child: const Text('Kirim ulang',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14,
+                                    color: Colors.blue)),
                           )
                         ],
                       ),
@@ -110,33 +125,16 @@ class VerifOTPView extends GetView<VerifOTPController> {
           showFieldAsBox: true,
           onCodeChanged: (String code) {},
           onSubmit: (String verificationcode) {
-            print(verificationcode);
             String validasi = '1111';
-            print('validasi$validasi');
+
             if (verificationcode == validasi) {
-              print(verificationcode);
-              Get.snackbar(
-                  "Verifikasi Kode OTP", 'OTP $verificationcode Berhasil',
-                  colorText: const Color.fromRGBO(255, 255, 255, 1));
-              Get.offNamed(Routes.UBAH_PASSWORD);
+              Get.offNamed('ubah-password');
             } else {
               Get.snackbar(
                   "Verifikasi Kode OTP", 'OTP $verificationcode Tidak sama ',
                   backgroundColor: redglobal, colorText: Colors.white);
             }
           }),
-    );
-  }
-
-  _Text(String tittle, FontWeight fontweight, double size, Color color) {
-    return Text(
-      tittle,
-      style: GoogleFonts.getFont(
-        'Alumni Sans',
-        fontWeight: fontweight,
-        fontSize: size,
-        color: color,
-      ),
     );
   }
 }
