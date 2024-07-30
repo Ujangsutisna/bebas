@@ -64,7 +64,7 @@ class ApiClient {
                         status == 403);
               }));
       print('status code ni${response.statusCode}');
-      if (response.statusCode == 403 ||response.statusCode == 401) {
+      if (response.statusCode == 403 || response.statusCode == 401) {
         UserInfo().logout();
       }
       return response;
@@ -75,7 +75,27 @@ class ApiClient {
 
   Future<Response> put(String path, dynamic data) async {
     try {
-      final response = await dio.put(Uri.encodeFull(path), data: data);
+      final dataToken = await Token();
+      final response = await dio.put(Uri.encodeFull(path),
+          data: data,
+          options: Options(
+              headers: {
+                'Authorization': 'Bearer $dataToken',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
+              },
+              validateStatus: (status) {
+                print(status);
+                return status != null &&
+                    (status >= 200 && status < 300 ||
+                        status == 400 ||
+                        status == 404 ||
+                        status == 403);
+              }));
+      print('status code ni${response.statusCode}');
+      if (response.statusCode == 403 || response.statusCode == 401) {
+        UserInfo().logout();
+      }
       return response;
     } on DioException catch (e) {
       throw Exception(e.message);

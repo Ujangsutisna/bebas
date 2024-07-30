@@ -2,8 +2,8 @@
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bebas/app/data/Helpers/user_info.dart';
-import 'package:bebas/app/data/kelompokget_model.dart';
-import 'package:bebas/app/data/user_model.dart';
+import 'package:bebas/app/data/model/kelompokget_model.dart';
+import 'package:bebas/app/data/model/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -50,42 +50,45 @@ class BerandaView extends GetView<BerandaController> {
                     end: Alignment(-0.0, -0.9),
                   )),
               child: Column(children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const SizedBox(
-                        width: 261,
-                        child: AutoSizeText(
-                          'SISTEM PENDAFTARAN KKN',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white),
-                        ),
-                      ),
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                        ),
-                        child: SizedBox(
-                          width: 17.1,
-                          height: 18.4,
-                          child: IconButton(
-                            onPressed: () {
-                              controller.LoadData();
-                            },
-                            icon: const Icon(
-                              CupertinoIcons.bell_fill,
-                            ),
-                            color: Colors.white,
-                            iconSize: 20,
+                SizedBox(
+                  width: mdsize.width,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          child: AutoSizeText(
+                            'SISTEM PENDAFTARAN KKN',
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white),
                           ),
                         ),
-                      ),
-                    ]),
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: const BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(25.0)),
+                          ),
+                          child: SizedBox(
+                            width: 17.1,
+                            height: 18.4,
+                            child: IconButton(
+                              onPressed: () {
+                                controller.LoadData();
+                              },
+                              icon: const Icon(
+                                CupertinoIcons.bell_fill,
+                              ),
+                              color: Colors.white,
+                              iconSize: 20,
+                            ),
+                          ),
+                        ),
+                      ]),
+                ),
                 const SizedBox(height: 20),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -164,13 +167,14 @@ class BerandaView extends GetView<BerandaController> {
                             if (userType == 'mahasiswa')
                               _Menu_KKN("Laporan", bluedark, Icons.book,
                                   isLaporan: true), // --------- Mahasiswa
+                            // --------- Dospem---------------------------------
                             if (userType == 'dosen_pembimbing')
                               _Menu_KKN(
-                                  "Approve", bluedark, Icons.list_alt_sharp,
-                                  page: ''), // --------- Dospem
-                            if (userType == 'dosen_pembimbing')
-                              _Menu_KKN('Kelompok', yellowglobal, Icons.group,
+                                  'Program kerja', bluedark, Icons.list_alt_sharp,
                                   isProgramDospem: true), // --------- Dospem
+                            if (userType == 'dosen_pembimbing')
+                              _Menu_KKN('Bimbingan', yellowglobal, Icons.group,
+                                  isBimbinganDospem: true), // --------- Dospem
                             _Menu_KKN(
                                 "Logout", redglobal, Icons.logout_outlined,
                                 isBack: true),
@@ -215,7 +219,7 @@ class BerandaView extends GetView<BerandaController> {
                             }),
                             Container(
                               padding: const EdgeInsets.fromLTRB(30, 0, 30, 10),
-                              height: mdsize.height * 0.45,
+                              height: mdsize.height,
                               child: _pageViewBeranda(mdsize),
                             )
                           ],
@@ -234,7 +238,7 @@ class BerandaView extends GetView<BerandaController> {
         onPressed: () {
           controller.btnPageChanged(index);
         },
-        child: Container(
+        child: SizedBox(
           height: 30,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -277,9 +281,10 @@ class BerandaView extends GetView<BerandaController> {
       bool isDaftar = false,
       bool isProgram = false,
       bool isProgramDospem = false,
-      bool isLaporan = false}) {
+      bool isLaporan = false,
+      bool isBimbinganDospem = false}) {
     final user = controller.dataUser.value.nama;
-    return Container(
+    return SizedBox(
       width: 90,
       child: GestureDetector(
         onTap: () {
@@ -305,7 +310,10 @@ class BerandaView extends GetView<BerandaController> {
                 backgroundColor: Colors.red, colorText: Colors.white);
           } else if (isProgramDospem) {
             Get.toNamed('kelompok-dospem',
-                arguments: controller.dataUser.value);
+                arguments: [controller.dataUser.value, 'Program kerja']);
+          } else if (isBimbinganDospem) {
+            Get.toNamed('kelompok-dospem',
+                arguments: [controller.dataUser.value, 'Bimbingan']);
           }
         },
         child: Column(
@@ -317,12 +325,10 @@ class BerandaView extends GetView<BerandaController> {
               color: color,
               size: 30.0,
             ),
-            Container(
-              child: Text(
-                judul,
-                style: TextStyle(
-                    fontSize: 12, fontWeight: FontWeight.w400, color: color),
-              ),
+            Text(
+              judul,
+              style: TextStyle(
+                  fontSize: 12, fontWeight: FontWeight.w400, color: color),
             ),
           ],
         ),
@@ -430,12 +436,12 @@ class BerandaView extends GetView<BerandaController> {
           ? Column(
               children: [
                 Container(
-                   
                     color: Colors.white,
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(margin:EdgeInsets.only(bottom:10),
+                          Container(
+                              margin: EdgeInsets.only(bottom: 10),
                               child: Center(
                                   child: Text('Data pendaftaran',
                                       style: TextStyle(
@@ -470,13 +476,13 @@ class BerandaView extends GetView<BerandaController> {
   _rowData(String label, dynamic kelompok) {
     return Container(
       padding: EdgeInsets.only(bottom: 10),
-      child: Row( crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-        SizedBox(width: 100, child: Text(label,style:TextStyle(fontWeight: FontWeight.w600))),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        SizedBox(
+            width: 100,
+            child: Text(label, style: TextStyle(fontWeight: FontWeight.w600))),
         const Text(':  '),
         Expanded(
-            child:
-                SizedBox(width: double.infinity, child: Text('${kelompok}')))
+            child: SizedBox(width: double.infinity, child: Text('${kelompok}')))
       ]),
     );
   }

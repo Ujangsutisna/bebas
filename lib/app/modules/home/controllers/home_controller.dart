@@ -1,9 +1,9 @@
 import 'package:bebas/app/data/Helpers/apiclient.dart';
 import 'package:bebas/app/data/Helpers/user_info.dart';
-import 'package:bebas/app/data/agenda_model.dart';
-import 'package:bebas/app/data/kelompokget_model.dart';
-import 'package:bebas/app/data/mahasiswa_model.dart';
-import 'package:bebas/app/data/user_model.dart';
+import 'package:bebas/app/data/model/agenda_model.dart';
+import 'package:bebas/app/data/model/kelompokget_model.dart';
+import 'package:bebas/app/data/model/mahasiswa_model.dart';
+import 'package:bebas/app/data/model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

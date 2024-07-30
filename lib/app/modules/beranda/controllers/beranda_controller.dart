@@ -1,11 +1,10 @@
 // ignore_for_file: non_constant_identifier_names, unnecessary_overrides
-
 import 'package:bebas/app/data/Helpers/apiclient.dart';
 import 'package:bebas/app/data/Helpers/user_info.dart';
-import 'package:bebas/app/data/agenda_model.dart';
-import 'package:bebas/app/data/mahasiswa_model.dart';
-import 'package:bebas/app/data/kelompokget_model.dart';
-import 'package:bebas/app/data/user_model.dart';
+import 'package:bebas/app/data/model/agenda_model.dart';
+import 'package:bebas/app/data/model/mahasiswa_model.dart';
+import 'package:bebas/app/data/model/kelompokget_model.dart';
+import 'package:bebas/app/data/model/user_model.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
@@ -15,6 +14,7 @@ class BerandaController extends GetxController {
   Rx<KelompokGet> Kelompok = KelompokGet().obs;
   Rx<Allkelompokget> allKelompok = Allkelompokget().obs;
   Rx<DataUser> dataUser = DataUser().obs;
+ 
   List<dynamic> menuPageView = [
     'Pendaftaran',
     'Program kerja',
@@ -91,21 +91,21 @@ class BerandaController extends GetxController {
       final response = await ApiClient().get('api/program-kerja');
 
       List<dynamic> dataArray = response.data;
-
       int lastIndex = dataArray.length;
-      Map<String, dynamic>? LastDataByIDKelompok;
+
+      List<dynamic>? data = [];
 
       for (int i = 0; i < lastIndex; i++) {
         final kelompok = response.data[i]['id_kelompok'];
+
         if (kelompok == Kelompok.value.idKelompok) {
-          LastDataByIDKelompok = response.data[i];
+          data.add(response.data[i]);
         }
       }
-      if (LastDataByIDKelompok != null) {
-        // print(
-        //     'DATA PROGRAM KERJA TERAKHIR YANG SESUAI :: $LastDataByIDKelompok');
+      if (data.isNotEmpty) {
+        print('nnti aja gua view');
       } else {
-        // print('Tidak ada program kerja yang sesuai ditemukan');
+        print('Tidak ada program kerja yang sesuai ditemukan');
       }
     } catch (e) {
       print('Error load proker: $e');

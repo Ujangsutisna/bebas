@@ -1,6 +1,8 @@
+// ignore_for_file: use_super_parameters
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bebas/app/data/Helpers/user_info.dart';
-import 'package:bebas/app/data/user_model.dart';
+import 'package:bebas/app/data/model/user_model.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +25,7 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     final Size mdsize = MediaQuery.of(context).size;
     return Scaffold(
-      body: Container(height:mdsize.height,
+      body: SizedBox(height:mdsize.height,
         child: Stack(
           children: [
             Positioned(
@@ -111,7 +113,7 @@ class HomeView extends GetView<HomeController> {
                             ],
                           ));
                         } else if (controller.dataUser.value.nama != null) {
-                          print('ID :::: ${controller.dataUser.value.ID}');
+                          
                           return _DataUser(controller.dataUser.value);
                         } else {
                           return const Text('No data');
@@ -225,7 +227,7 @@ class HomeView extends GetView<HomeController> {
                                 ],
                               );
                             }),
-                            Container(
+                            SizedBox(
                               height: 200,
                                   child: _pageViewBeranda(),                  )
                           ],
@@ -264,7 +266,7 @@ class HomeView extends GetView<HomeController> {
       bool isProgramDospem = false,
       bool isLaporan = false}) {
     final user = controller.dataUser.value.nama;
-    return Container(
+    return SizedBox(
       width: 90,
       child: GestureDetector(
         onTap: () {

@@ -14,6 +14,8 @@ abstract class Routes {
   static const PROGRAMKERJA = _Paths.PROGRAMKERJA;
   static const KELOMPOK_DOSPEM = _Paths.KELOMPOK_DOSPEM;
   static const LAPORAN = _Paths.LAPORAN;
+  static const PROGRAMKERJA_DOSPEM = _Paths.PROGRAMKERJA_DOSPEM;
+  static const BIMBINGAN_DOSPEM = _Paths.BIMBINGAN_DOSPEM;
 }
 
 abstract class _Paths {
@@ -29,4 +31,6 @@ abstract class _Paths {
   static const PROGRAMKERJA = '/programkerja';
   static const KELOMPOK_DOSPEM = '/kelompok-dospem';
   static const LAPORAN = '/laporan';
+  static const PROGRAMKERJA_DOSPEM = '/programkerja-dospem';
+  static const BIMBINGAN_DOSPEM = '/bimbingan-dospem';
 }
