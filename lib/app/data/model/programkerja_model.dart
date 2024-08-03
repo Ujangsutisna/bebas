@@ -19,6 +19,8 @@ class ProgramKerjaGet {
   String? bodyProker;
   int? idKelompok;
   String? approve;
+  String? tanggalMulai;
+  String? tanggalSelesai;
   String? createAt;
   String? updateAt;
 
@@ -28,6 +30,8 @@ class ProgramKerjaGet {
       this.bodyProker,
       this.idKelompok,
       this.approve,
+      this.tanggalMulai,
+      this.tanggalSelesai,
       this.createAt,
       this.updateAt});
   ProgramKerjaGet.fromJson(Map<String, dynamic> json) {
@@ -36,12 +40,21 @@ class ProgramKerjaGet {
     bodyProker = json["body_proker"];
     idKelompok = json["id_kelompok"];
     approve = json["approve"];
+    tanggalMulai = json['tanggal_mulai'];
+    tanggalSelesai = json['tanggal_selesai'];
     createAt = json["created_At"];
     updateAt = json["updated_at"];
   }
   Map<String, dynamic> toJsonStatus() {
     final data = <String, dynamic>{};
     data['status'] = approve;
+    return data;
+  }
+
+  Map<String, dynamic> toJsonUpdateTanggal() {
+    final data = <String, dynamic>{};
+    data['tanggal_mulai'] = tanggalMulai;
+    data['tanggal_selesai'] = tanggalSelesai;
     return data;
   }
 }

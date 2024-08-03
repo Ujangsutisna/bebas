@@ -1,7 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, use_super_parameters
 
 import 'package:bebas/app/data/model/kelompokget_model.dart';
-import 'package:bebas/app/data/model/user_model.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/kelompok_dospem_controller.dart';
@@ -52,6 +52,12 @@ class KelompokDospemView extends GetView<KelompokDospemController> {
           Get.toNamed('programkerja-dospem', arguments: kelompok);
         } else if (nextpage == 'Bimbingan') {
           Get.toNamed('bimbingan-dospem', arguments: kelompok);
+        } else if (nextpage == 'Laporan') {
+          Get.toNamed('laporan-dospem', arguments: kelompok);
+        } else if (nextpage == 'Jadwal sidang') {
+          Get.toNamed('jadwalsidang-dospem', arguments: kelompok);
+        } else if (nextpage == 'Penilaian') {
+           Get.toNamed('penilaian-dospem', arguments: kelompok);
         }
       },
       child: Container(

@@ -16,6 +16,9 @@ abstract class Routes {
   static const LAPORAN = _Paths.LAPORAN;
   static const PROGRAMKERJA_DOSPEM = _Paths.PROGRAMKERJA_DOSPEM;
   static const BIMBINGAN_DOSPEM = _Paths.BIMBINGAN_DOSPEM;
+  static const LAPORAN_DOSPEM = _Paths.LAPORAN_DOSPEM;
+  static const JADWALSIDANG_DOSPEM = _Paths.JADWALSIDANG_DOSPEM;
+  static const PENILAIAN_DOSPEM = _Paths.PENILAIAN_DOSPEM;
 }
 
 abstract class _Paths {
@@ -33,4 +36,7 @@ abstract class _Paths {
   static const LAPORAN = '/laporan';
   static const PROGRAMKERJA_DOSPEM = '/programkerja-dospem';
   static const BIMBINGAN_DOSPEM = '/bimbingan-dospem';
+  static const LAPORAN_DOSPEM = '/laporan-dospem';
+  static const JADWALSIDANG_DOSPEM = '/jadwalsidang-dospem';
+  static const PENILAIAN_DOSPEM = '/penilaian-dospem';
 }

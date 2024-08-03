@@ -70,7 +70,7 @@ class ProgramkerjaController extends GetxController {
       List<dynamic> data = response.data;
       List<dynamic> dataProkerReview = [];
       List<dynamic> dataProkerApprove = [];
-      print(response.data);
+
       for (int i = 0; i < data.length; i++) {
         final proker = response.data[i];
         if (response.data[i]['id_kelompok'] == kelompok.idKelompok) {
@@ -93,15 +93,41 @@ class ProgramkerjaController extends GetxController {
   }
 
   InsertProgramKerja(ProgramKerjaPost programkerja) async {
-    final data = programkerja.toJson();
-    final response = await ApiClient().post('api/program-kerja', data);
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      Get.offNamed('beranda');
-      Get.snackbar('Berhasi', '${response.data['message']}',
-          backgroundColor: Colors.green, colorText: Colors.white);
-    } else {
-      Get.snackbar('Maaf', '${response.data['message']}',
-          backgroundColor: Colors.red, colorText: Colors.white);
+    try {
+      final data = programkerja.toJson();
+      final response = await ApiClient().post('api/program-kerja', data);
+      print('data ${response.data['message']}');
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Get.offNamed('beranda');
+        Get.snackbar('Berhasi', '${response.data['message']}',
+            backgroundColor: Colors.green, colorText: Colors.white);
+      } else {
+        Get.snackbar('Maaf', '${response.data['message']}',
+            backgroundColor: Colors.red, colorText: Colors.white);
+      }
+    } catch (e) {
+      print('Error:$e');
+    }
+  }
+
+  updateTanggalProker(id, ProgramKerjaGet proker) async {
+    try {
+      final data = proker.toJsonUpdateTanggal();
+      print(data);
+      print('ctrl : $id');
+      final response =
+          await ApiClient().put('api/program-kerja/$id/done', data);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Get.reload();
+        viewProker();
+        Get.snackbar('Berhasi', '${response.data['message']}',
+            backgroundColor: Colors.green, colorText: Colors.white);
+      } else {
+        Get.snackbar('Maaf', '${response.data['message']}',
+            backgroundColor: Colors.red, colorText: Colors.white);
+      }
+    } catch (e) {
+      print('Error : $e');
     }
   }
 

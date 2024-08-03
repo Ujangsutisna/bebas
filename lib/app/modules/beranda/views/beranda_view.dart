@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names, void_checks, use_super_parameters
+// ignore_for_file: non_constant_identifier_names, void_checks, use_super_parameters, unnecessary_brace_in_string_interps
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bebas/app/data/Helpers/user_info.dart';
@@ -30,7 +30,7 @@ class BerandaView extends GetView<BerandaController> {
       child: Container(
         width: mdsize.width,
         height: mdsize.height,
-        color: Color.fromARGB(184, 243, 243, 243),
+        color: const Color.fromARGB(184, 243, 243, 243),
         margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
         child: Stack(
           children: [
@@ -169,12 +169,23 @@ class BerandaView extends GetView<BerandaController> {
                                   isLaporan: true), // --------- Mahasiswa
                             // --------- Dospem---------------------------------
                             if (userType == 'dosen_pembimbing')
-                              _Menu_KKN(
-                                  'Program kerja', bluedark, Icons.list_alt_sharp,
+                              _Menu_KKN('Program kerja', bluedark,
+                                  Icons.list_alt_sharp,
                                   isProgramDospem: true), // --------- Dospem
                             if (userType == 'dosen_pembimbing')
                               _Menu_KKN('Bimbingan', yellowglobal, Icons.group,
                                   isBimbinganDospem: true), // --------- Dospem
+                            if (userType == 'dosen_pembimbing')
+                              _Menu_KKN('Laporan', greenglo, Icons.book,
+                                  isLaporanDospem: true), // --------- Dospem
+                            if (userType == 'dosen_pembimbing')
+                              _Menu_KKN('Jadwal Sidang', bluedark,
+                                  Icons.table_view_outlined,
+                                  isSidangDospem: true), // --------- Dospem
+                            if (userType == 'dosen_pembimbing')
+                              _Menu_KKN('Penilaian', greenglo,
+                                  Icons.mark_unread_chat_alt_sharp,
+                                  isPenilaianDospem: true), // --------- Dospem
                             _Menu_KKN(
                                 "Logout", redglobal, Icons.logout_outlined,
                                 isBack: true),
@@ -282,7 +293,10 @@ class BerandaView extends GetView<BerandaController> {
       bool isProgram = false,
       bool isProgramDospem = false,
       bool isLaporan = false,
-      bool isBimbinganDospem = false}) {
+      bool isBimbinganDospem = false,
+      bool isLaporanDospem = false,
+      bool isSidangDospem = false,
+      bool isPenilaianDospem = false}) {
     final user = controller.dataUser.value.nama;
     return SizedBox(
       width: 90,
@@ -314,6 +328,15 @@ class BerandaView extends GetView<BerandaController> {
           } else if (isBimbinganDospem) {
             Get.toNamed('kelompok-dospem',
                 arguments: [controller.dataUser.value, 'Bimbingan']);
+          } else if (isLaporanDospem) {
+            Get.toNamed('kelompok-dospem',
+                arguments: [controller.dataUser.value, 'Laporan']);
+          } else if (isSidangDospem) {
+            Get.toNamed('kelompok-dospem',
+                arguments: [controller.dataUser.value, 'Jadwal sidang']);
+          } else if (isPenilaianDospem) {
+            Get.toNamed('kelompok-dospem',
+                arguments: [controller.dataUser.value, 'Penilaian']);
           }
         },
         child: Column(
@@ -441,7 +464,7 @@ class BerandaView extends GetView<BerandaController> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                              margin: EdgeInsets.only(bottom: 10),
+                              margin: const EdgeInsets.only(bottom: 10),
                               child: Center(
                                   child: Text('Data pendaftaran',
                                       style: TextStyle(
@@ -475,11 +498,12 @@ class BerandaView extends GetView<BerandaController> {
 
   _rowData(String label, dynamic kelompok) {
     return Container(
-      padding: EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         SizedBox(
             width: 100,
-            child: Text(label, style: TextStyle(fontWeight: FontWeight.w600))),
+            child: Text(label,
+                style: const TextStyle(fontWeight: FontWeight.w600))),
         const Text(':  '),
         Expanded(
             child: SizedBox(width: double.infinity, child: Text('${kelompok}')))

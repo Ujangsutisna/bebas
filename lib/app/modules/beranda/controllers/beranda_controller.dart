@@ -1,7 +1,8 @@
-// ignore_for_file: non_constant_identifier_names, unnecessary_overrides
+// ignore_for_file: non_constant_identifier_names, unnecessary_overrides, avoid_print
 import 'package:bebas/app/data/Helpers/apiclient.dart';
 import 'package:bebas/app/data/Helpers/user_info.dart';
 import 'package:bebas/app/data/model/agenda_model.dart';
+import 'package:bebas/app/data/model/bimbingan_model.dart';
 import 'package:bebas/app/data/model/mahasiswa_model.dart';
 import 'package:bebas/app/data/model/kelompokget_model.dart';
 import 'package:bebas/app/data/model/user_model.dart';
@@ -13,8 +14,9 @@ class BerandaController extends GetxController {
   Rx<AllAgenda> allAgenda = AllAgenda().obs;
   Rx<KelompokGet> Kelompok = KelompokGet().obs;
   Rx<Allkelompokget> allKelompok = Allkelompokget().obs;
+  Rx<BimbinganModel> bimbingan = BimbinganModel().obs;
   Rx<DataUser> dataUser = DataUser().obs;
- 
+
   List<dynamic> menuPageView = [
     'Pendaftaran',
     'Program kerja',
@@ -71,6 +73,7 @@ class BerandaController extends GetxController {
     if (typeAccount == 'mahasiswa') {
       _LoadKelompok(userID!);
       _LoadProgramKerja();
+      _loadBimbingan();
     }
   }
 
@@ -109,6 +112,21 @@ class BerandaController extends GetxController {
       }
     } catch (e) {
       print('Error load proker: $e');
+    }
+  }
+
+  _loadBimbingan() async {
+    final response = await ApiClient().get('api/bimbingan');
+    List<dynamic> dataBimbingan = response.data;
+    final bimbinganLength = dataBimbingan.length;
+    dynamic bimbinganLastByiD;
+    for (int i = 0; i < bimbinganLength; i++) {
+      if (dataBimbingan[i]['id_kelopok'] == Kelompok.value.idKelompok) {
+        bimbinganLastByiD = dataBimbingan[i];
+      }
+    }
+    if (bimbinganLastByiD != null) {
+      print('Data Bimbingan : $bimbinganLastByiD');
     }
   }
 

@@ -9,7 +9,7 @@ class ProgramkerjaDospemController extends GetxController {
   Rx<AllProgramKerjaGet> allProkerReview = AllProgramKerjaGet().obs;
   Rx<AllProgramKerjaGet> allProkerApprove = AllProgramKerjaGet().obs;
   final pageController = PageController();
-  late KelompokGet kelompok;
+  KelompokGet kelompok = Get.arguments;
   Rx<int> updateProker = 0.obs;
   var indexBtn = 0.obs;
   Rx<String> Dropdownvalue = 'approve'.obs;

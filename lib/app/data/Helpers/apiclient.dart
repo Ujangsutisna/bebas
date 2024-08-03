@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:bebas/app/data/Helpers/user_info.dart';
 import 'package:dio/dio.dart';
 
 final Dio dio = Dio(BaseOptions(
-    baseUrl: 'https://kkn.proyek.org/',
+    baseUrl: 'http://kkn.proyek.org/',
     connectTimeout: const Duration(seconds: 10),
     receiveTimeout: const Duration(seconds: 6)));
 final userInfo = UserInfo();
@@ -29,7 +31,8 @@ class ApiClient {
               return status != null &&
                   (status >= 200 && status < 300 ||
                       status == 404 ||
-                      status == 403);
+                      status == 403 ||
+                      status == 500);
             },
           ));
 
@@ -53,7 +56,44 @@ class ApiClient {
               headers: {
                 'Authorization': 'Bearer $dataToken',
                 'X-Requested-With': 'XMLHttpRequest',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+              },
+              validateStatus: (status) {
+                print(status);
+                return status != null &&
+                    (status >= 200 && status < 300 ||
+                        status == 400 ||
+                        status == 404 ||
+                        status == 403);
+              }));
+      print('status code ni${response.statusCode}');
+      if (response.statusCode == 403 || response.statusCode == 401) {
+        UserInfo().logout();
+      }
+      return response;
+    } on DioException catch (e) {
+      throw Exception(e.message);
+    }
+  }
+
+  Future<Response> postFile(String path, dynamic data) async {
+    try {
+     FormData  formData = FormData.fromMap( {
+        'title': data[0],
+        'body': data[1],
+        'file_laporan':await MultipartFile.fromFile(
+          data[2].path, // Membaca file sebagai stream
+           filename: data[3])
+      });
+      final dataToken = await Token();
+      print(dataToken);
+      final response = await dio.post(Uri.encodeFull(path),
+          data: formData,
+          options: Options(
+              headers: {
+                'Authorization': 'Bearer $dataToken',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'multipart/form-data',
               },
               validateStatus: (status) {
                 print(status);
@@ -90,7 +130,8 @@ class ApiClient {
                     (status >= 200 && status < 300 ||
                         status == 400 ||
                         status == 404 ||
-                        status == 403);
+                        status == 403 ||
+                        status == 422);
               }));
       print('status code ni${response.statusCode}');
       if (response.statusCode == 403 || response.statusCode == 401) {

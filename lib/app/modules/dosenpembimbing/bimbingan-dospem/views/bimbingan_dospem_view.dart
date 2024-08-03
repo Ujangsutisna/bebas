@@ -95,7 +95,6 @@ class BimbinganDospemView extends GetView<BimbinganDospemController> {
           } else {
             return null;
           }
-          
         });
   }
 

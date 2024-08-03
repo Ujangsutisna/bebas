@@ -18,5 +18,6 @@ class BimbinganModel {
     data['tanggal_bimbingan'] = tanggalBimbingan;
     data['id_kelompok'] = idKelompok;
     return data;
+    
   }
 }

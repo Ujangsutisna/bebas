@@ -19,8 +19,6 @@ class ProgramkerjaDospemView extends GetView<ProgramkerjaDospemController> {
   Widget build(BuildContext context) {
     controller.onReady();
     var mdSize = MediaQuery.of(context).size;
-    KelompokGet kelompok = Get.arguments;
-    controller.kelompok = kelompok;
 
     return Scaffold(
       appBar: AppBar(
@@ -108,7 +106,7 @@ class ProgramkerjaDospemView extends GetView<ProgramkerjaDospemController> {
                   ? ListView(
                       children: [
                         for (int i = 0; i < prokerApprove.length; i++)
-                          _dataProkerview(prokerApprove![i], i, context, review: false)
+                          _dataProkerview(prokerApprove[i], i, context, review: false)
                       ],
                     )
                   : const Center(child: Text('Data program kerja kosong'));

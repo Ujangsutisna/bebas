@@ -120,8 +120,8 @@ class ProgramkerjaView extends GetView<ProgramkerjaController> {
                   ? ListView(
                       children: [
                         for (int i = 0; i < prokerReview.length; i++)
-                          _dataProkerReview(
-                              prokerReview[i], i, context, kelompok)
+                          _dataProkerView(prokerReview[i], i, context, kelompok,
+                              isApprove: false)
                       ],
                     )
                   : const Center(child: Text('Data program kerja kosong'));
@@ -133,7 +133,7 @@ class ProgramkerjaView extends GetView<ProgramkerjaController> {
                   ? ListView(
                       children: [
                         for (int i = 0; i < prokerApprove.length; i++)
-                          _dataProkerReview(
+                          _dataProkerView(
                               prokerApprove[i], i, context, kelompok)
                       ],
                     )
@@ -143,9 +143,12 @@ class ProgramkerjaView extends GetView<ProgramkerjaController> {
     );
   }
 
-  _dataProkerReview(ProgramKerjaGet proker, int index, BuildContext context,
-      KelompokGet kelompok) {
+  _dataProkerView(ProgramKerjaGet proker, int index, BuildContext context,
+      KelompokGet kelompok,
+      {bool isApprove = true}) {
     return Obx(() {
+      final id = proker.idProker;
+      print(controller.indexdata.value);
       return Container(
         decoration: BoxDecoration(
             border: Border(bottom: BorderSide(width: 0.5, color: bluedark))),
@@ -161,7 +164,7 @@ class ProgramkerjaView extends GetView<ProgramkerjaController> {
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
-                      color: greenglo,
+                      color: bluedark,
                       borderRadius: const BorderRadius.all(Radius.circular(5))),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -194,39 +197,63 @@ class ProgramkerjaView extends GetView<ProgramkerjaController> {
                         '${proker.judulProker}',
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
+                      const SizedBox(height: 5),
                       Text('${proker.bodyProker}',
                           style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
-                              color: greenglo)),
+                              color: bluedark)),
+                      const SizedBox(height: 5),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('${proker.tanggalMulai}',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    color: bluedark)),
+                            Text('${proker.tanggalSelesai }',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    color: bluedark)),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ],
             ),
             Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              if (isApprove)
+                MaterialButton(
+                    onPressed: () {
+                      var isDetailData = controller.detailData.value;
+                      if (isDetailData == 1) {
+                        controller.detailData.value = 0;
+                      } else {
+                        controller.detailData.value = 1;
+                      }
+                      controller.indexdata.value = index + 1;
+                    },
+                    child: AnimatedRotation(
+                      turns: controller.detailData.value == 1 &&
+                              index + 1 == controller.indexdata.value
+                          ? 0.50
+                          : 0,
+                      duration: const Duration(milliseconds: 350),
+                      curve: Curves.easeInOut,
+                      child: Icon(
+                        Icons.arrow_drop_down_rounded,
+                        size: 30,
+                        color: bluedark,
+                      ),
+                    )),
               MaterialButton(
-                  onPressed: () {
-                    var isDetailData = controller.detailData.value;
-                    if (isDetailData == 1) {
-                      controller.detailData.value = 0;
-                    } else {
-                      controller.detailData.value = 1;
-                    }
-                    controller.indexdata.value = index + 1;
-                  },
-                  child: AnimatedRotation(
-                    turns: controller.detailData.value == 1 ? 0.50 : 0,
-                    duration: const Duration(milliseconds: 350),
-                    curve: Curves.easeInOut,
-                    child: Icon(
-                      Icons.arrow_drop_down_rounded,
-                      size: 30,
-                      color: bluedark,
-                    ),
-                  )),
-              MaterialButton(
-                color: greenglo,
+                color: bluedark,
                 onPressed: () {
                   final String pdfUrl =
                       'https://drive.google.com/uc?export=view&id=${proker.bodyProker}';
@@ -244,41 +271,57 @@ class ProgramkerjaView extends GetView<ProgramkerjaController> {
                     style: TextStyle(color: Colors.white)),
               )
             ]),
-            if (controller.detailData.value == 1 &&
-                index + 1 == controller.indexdata.value)
-              Form(
-                key: controller.formKeyUpdate,
-                child: Column(
-              children: [
-                Row(children: [
-                  Expanded(
-                    child: _fieldInputDate(
-                        context,
-                        controller.tanggalMulaiCtrl,
-                        'Tanggal mulai',
-                        kelompok),
+            if (isApprove)
+              if (controller.detailData.value == 1 &&
+                  index + 1 == controller.indexdata.value)
+                Form(
+                  key: controller.formKeyUpdate,
+                  child: Column(
+                    children: [
+                      Row(children: [
+                        Expanded(
+                          child: _fieldInputDate(
+                              context,
+                              controller.tanggalMulaiCtrl,
+                              'Tanggal mulai',
+                              kelompok),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: _fieldInputDate(
+                              context,
+                              controller.tanggalSelesaiCtrl,
+                              'Tanggal selesai',
+                              kelompok),
+                        )
+                      ]),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              if (controller.formKeyUpdate.currentState!
+                                  .validate()) {
+                                print('view::${id}');
+                                final idProker = id;
+                                final tanggalMulai =
+                                    controller.tanggalMulaiCtrl.text;
+                                final tanggalSelesai =
+                                    controller.tanggalSelesaiCtrl.text;
+                                ProgramKerjaGet proker = ProgramKerjaGet(
+                                    tanggalMulai: tanggalMulai,
+                                    tanggalSelesai: tanggalSelesai);
+                                controller.updateTanggalProker(
+                                    idProker, proker);
+                              }
+                            },
+                            child: const Text('Perbaharui',
+                                style: TextStyle(color: Colors.white))),
+                      )
+                    ],
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: _fieldInputDate(
-                        context,
-                        controller.tanggalSelesaiCtrl,
-                        'Tanggal selesai',
-                        kelompok),
-                  )
-                ]),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                      onPressed: () {},
-                      child: const Text('Perbaharui',
-                          style: TextStyle(color: Colors.white))),
                 )
-              ],
-                ),
-              )
           ],
         ),
       );

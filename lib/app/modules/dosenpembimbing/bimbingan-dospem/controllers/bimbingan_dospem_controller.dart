@@ -1,19 +1,20 @@
 import 'package:bebas/app/data/Helpers/apiclient.dart';
 import 'package:bebas/app/data/model/bimbingan_model.dart';
 import 'package:bebas/app/data/model/kelompokget_model.dart';
-import 'package:bebas/app/modules/beranda/views/beranda_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class BimbinganDospemController extends GetxController {
   //TODO: Implement BimbinganDospemController
+
   final formKey = GlobalKey<FormState>();
   TextEditingController titleCtrl = TextEditingController();
   TextEditingController bodyCtrl = TextEditingController();
   TextEditingController linkCtrl = TextEditingController();
   TextEditingController tanggalCtrl = TextEditingController();
   KelompokGet kelompok = Get.arguments;
+
   var selectedDate = DateTime.now().obs;
   final count = 0.obs;
   @override

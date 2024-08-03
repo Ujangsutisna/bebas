@@ -12,8 +12,12 @@ import '../modules/beranda/bindings/beranda_binding.dart';
 import '../modules/beranda/views/beranda_view.dart';
 import '../modules/dosenpembimbing/bimbingan-dospem/bindings/bimbingan_dospem_binding.dart';
 import '../modules/dosenpembimbing/bimbingan-dospem/views/bimbingan_dospem_view.dart';
+import '../modules/dosenpembimbing/jadwalsidang-dospem/bindings/jadwalsidang_dospem_binding.dart';
+import '../modules/dosenpembimbing/jadwalsidang-dospem/views/jadwalsidang_dospem_view.dart';
 import '../modules/dosenpembimbing/kelompok-dospem/bindings/kelompok_dospem_binding.dart';
 import '../modules/dosenpembimbing/kelompok-dospem/views/kelompok_dospem_view.dart';
+import '../modules/dosenpembimbing/laporan-dospem/bindings/laporan_dospem_binding.dart';
+import '../modules/dosenpembimbing/laporan-dospem/views/laporan_dospem_view.dart';
 import '../modules/dosenpembimbing/programkerja-dospem/bindings/programkerja_dospem_binding.dart';
 import '../modules/dosenpembimbing/programkerja-dospem/views/programkerja_dospem_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -26,6 +30,8 @@ import '../modules/mahasiswa/programkerja/bindings/programkerja_binding.dart';
 import '../modules/mahasiswa/programkerja/views/programkerja_view.dart';
 import '../modules/mahasiswa/review/bindings/review_binding.dart';
 import '../modules/mahasiswa/review/views/review_view.dart';
+import '../modules/dosenpembimbing/penilaian-dospem/bindings/penilaian_dospem_binding.dart';
+import '../modules/dosenpembimbing/penilaian-dospem/views/penilaian_dospem_view.dart';
 
 part 'app_routes.dart';
 
@@ -97,6 +103,21 @@ class AppPages {
       name: _Paths.BIMBINGAN_DOSPEM,
       page: () => const BimbinganDospemView(),
       binding: BimbinganDospemBinding(),
+    ),
+    GetPage(
+      name: _Paths.LAPORAN_DOSPEM,
+      page: () => const LaporanDospemView(),
+      binding: LaporanDospemBinding(),
+    ),
+    GetPage(
+      name: _Paths.JADWALSIDANG_DOSPEM,
+      page: () => const JadwalsidangDospemView(),
+      binding: JadwalsidangDospemBinding(),
+    ),
+    GetPage(
+      name: _Paths.PENILAIAN_DOSPEM,
+      page: () => const PenilaianDospemView(),
+      binding: PenilaianDospemBinding(),
     ),
   ];
 }
