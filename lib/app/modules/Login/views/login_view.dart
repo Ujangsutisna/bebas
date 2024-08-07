@@ -141,7 +141,7 @@ class LoginView extends GetView<LoginController> {
                             });
                           }
                         },
-                        child: const Text("Simpan"),
+                        child: const Text("Masuk"),
                       ),
                     ),
                     TextButton(

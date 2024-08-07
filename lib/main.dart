@@ -18,7 +18,7 @@ Future<void> main() async {
 
   runApp(
     GetMaterialApp(
-      title: "Pendaftaran KKN",
+      title: "K2N Global Institute",
       initialRoute: initialRoute,
       getPages: AppPages.routes,
       theme: ThemeData(

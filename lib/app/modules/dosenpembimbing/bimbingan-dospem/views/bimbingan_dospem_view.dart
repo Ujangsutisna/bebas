@@ -1,13 +1,9 @@
-import 'dart:io';
-
 import 'package:bebas/app/data/model/bimbingan_model.dart';
 import 'package:bebas/app/data/model/kelompokget_model.dart';
 import 'package:bebas/app/modules/Login/views/login_view.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
 import '../controllers/bimbingan_dospem_controller.dart';
 
 class BimbinganDospemView extends GetView<BimbinganDospemController> {
@@ -33,6 +29,24 @@ class BimbinganDospemView extends GetView<BimbinganDospemController> {
                     Border(bottom: BorderSide(width: 0.5, color: bluedark))),
             padding: const EdgeInsets.fromLTRB(25, 10, 25, 10),
             child: _formInput(kelompok, context),
+          ),
+          Expanded(
+            child: Obx(() {
+              final bimbingan = controller.allBimbingan.value.bimbinganModel;
+              return bimbingan != null
+                  ? Container(
+                      padding: EdgeInsets.all(20),
+                      child: ListView(
+                        children: [
+                          for (int i = 0; i < bimbingan.length; i++)
+                            loadDataBimbingan(bimbingan[i], i)
+                        ],
+                      ),
+                    )
+                  : const Center(
+                      child: Text('Bimbingan kosong'),
+                    );
+            }),
           )
         ]),
       ),
@@ -105,13 +119,9 @@ class BimbinganDospemView extends GetView<BimbinganDospemController> {
       readOnly: true,
       decoration: InputDecoration(labelText: label),
       onTap: () async {
-        DateTime firstDate = DateTime.parse('${kelompok.tanggalMulai}');
-        DateTime lastDate = DateTime.parse('${kelompok.tanggalAkhir}');
+        DateTime firstDate = DateTime(2020);
+        DateTime lastDate = DateTime(2035);
         DateTime initialDate = controller.selectedDate.value;
-        if (initialDate.isBefore(firstDate)) {
-          initialDate =
-              firstDate; // Ensure initialDate is on or after firstDate
-        }
         DateTime? pickedDate = await showDatePicker(
           context: context,
           initialDate: initialDate,
@@ -139,6 +149,37 @@ class BimbinganDospemView extends GetView<BimbinganDospemController> {
         }
         return null;
       },
+    );
+  }
+
+  loadDataBimbingan(BimbinganModel bimbingan, index) {
+    return Container(
+        decoration:
+            const BoxDecoration(border: Border(bottom: BorderSide(width: 0.2))),
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+        child: Column(
+          children: [
+            _rowData('No', '${index + 1}'),
+            _rowData('Judul', '${bimbingan.judul}'),
+            _rowData('Isi', '${bimbingan.body}'),
+            _rowData('link', '${bimbingan.linkBimbingan}'),
+            _rowData('Tanggal', '${bimbingan.tanggalBimbingan}'),
+          ],
+        ));
+  }
+
+  _rowData(String label, dynamic value) {
+    return Container(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        SizedBox(
+            width: 100,
+            child: Text(label,
+                style: const TextStyle(fontWeight: FontWeight.w600))),
+        const Text(':  '),
+        Expanded(
+            child: SizedBox(width: double.infinity, child: Text('${value}')))
+      ]),
     );
   }
 }

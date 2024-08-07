@@ -19,10 +19,13 @@ abstract class Routes {
   static const LAPORAN_DOSPEM = _Paths.LAPORAN_DOSPEM;
   static const JADWALSIDANG_DOSPEM = _Paths.JADWALSIDANG_DOSPEM;
   static const PENILAIAN_DOSPEM = _Paths.PENILAIAN_DOSPEM;
+  static const PENILAIAN = _Paths.PENILAIAN;
+  static const SPLASHSCREEN = _Paths.SPLASHSCREEN;
 }
 
 abstract class _Paths {
   _Paths._();
+
   static const HOME = '/home';
   static const BERANDA = '/beranda';
   static const LOGIN = '/login';
@@ -39,4 +42,6 @@ abstract class _Paths {
   static const LAPORAN_DOSPEM = '/laporan-dospem';
   static const JADWALSIDANG_DOSPEM = '/jadwalsidang-dospem';
   static const PENILAIAN_DOSPEM = '/penilaian-dospem';
+  static const PENILAIAN = '/penilaian';
+  static const SPLASHSCREEN = '/splashscreen';
 }

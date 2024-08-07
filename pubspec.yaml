@@ -20,6 +20,7 @@ dependencies:
   url_launcher: ^6.2.4
   syncfusion_flutter_pdfviewer: ^20.4.54
   file_picker: ^8.0.0+1
+  flutter_native_splash: ^2.3.7
 
 dev_dependencies:
   flutter_lints: 4.0.0
@@ -29,7 +30,20 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - lib/app/data/json/allAgenda.json
     - assets/images/Logo1.png
     - assets/images/review.png
     - assets/images/approve.png
+flutter_native_splash:
+  branding: assets/images/branding.png
+  background_image: "assets/images/bgsplash.png"
+  # color: "#2b3f85"
+  image: assets/images/icon.png
+  branding_mode: bottom
+  android: true
+  ios: true
+  android_12:
+    color: "#ffffff"
+    image: assets/images/icon.png
+    branding: assets/images/branding.png
+    android: true
+    ios: true

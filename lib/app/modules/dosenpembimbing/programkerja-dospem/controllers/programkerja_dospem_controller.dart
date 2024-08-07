@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names, unnecessary_overrides
+
 import 'package:bebas/app/data/Helpers/apiclient.dart';
 import 'package:bebas/app/data/model/kelompokget_model.dart';
 import 'package:bebas/app/data/model/programkerja_model.dart';
@@ -7,6 +9,7 @@ import 'package:get/get.dart';
 class ProgramkerjaDospemController extends GetxController {
   //TODO: Implement ProgramkerjaDospemController
   Rx<AllProgramKerjaGet> allProkerReview = AllProgramKerjaGet().obs;
+  Rx<AllProgramKerjaGet> allProkerReject = AllProgramKerjaGet().obs;
   Rx<AllProgramKerjaGet> allProkerApprove = AllProgramKerjaGet().obs;
   final pageController = PageController();
   KelompokGet kelompok = Get.arguments;
@@ -51,6 +54,7 @@ class ProgramkerjaDospemController extends GetxController {
       List<dynamic> data = response.data;
       List<dynamic> dataProkerReview = [];
       List<dynamic> dataProkerApprove = [];
+      List<dynamic> dataProkerReject = [];
 
       for (int i = 0; i < data.length; i++) {
         final proker = response.data[i];
@@ -59,16 +63,20 @@ class ProgramkerjaDospemController extends GetxController {
             dataProkerReview.add(response.data[i]);
           } else if (proker['approve'] == 'approve') {
             dataProkerApprove.add(response.data[i]);
+          } else if (proker['approve'] == 'reject') {
+            dataProkerReject.add(response.data[i]);
           }
         }
       }
-      print('approve ${dataProkerApprove}');
+ 
       if (dataProkerReview.isNotEmpty) {
         allProkerReview.value = AllProgramKerjaGet.fromJson(dataProkerReview);
       }
       if (dataProkerApprove.isNotEmpty) {
         allProkerApprove.value = AllProgramKerjaGet.fromJson(dataProkerApprove);
-        print('id : ${allProkerApprove.value.programKerja![0].idProker}');
+      }
+      if (dataProkerApprove.isNotEmpty) {
+        allProkerReject.value = AllProgramKerjaGet.fromJson(dataProkerReject);
       }
     } catch (e) {
       print('error $e');
@@ -78,8 +86,6 @@ class ProgramkerjaDospemController extends GetxController {
   insertUpdateStatus(int id, ProgramKerjaGet proker) async {
     try {
       var data = proker.toJsonStatus();
-      print(data);
-      print(id);
       final response =
           await ApiClient().put('api/program-kerja/$id/status', data);
       print('Response data${response.data}');

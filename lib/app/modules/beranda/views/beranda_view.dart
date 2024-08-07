@@ -2,7 +2,7 @@
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bebas/app/data/Helpers/user_info.dart';
-import 'package:bebas/app/data/model/kelompokget_model.dart';
+
 import 'package:bebas/app/data/model/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -167,6 +167,10 @@ class BerandaView extends GetView<BerandaController> {
                             if (userType == 'mahasiswa')
                               _Menu_KKN("Laporan", bluedark, Icons.book,
                                   isLaporan: true), // --------- Mahasiswa
+                            if (userType == 'mahasiswa')
+                              _Menu_KKN("penilaian", bluedark,
+                                  Icons.mark_unread_chat_alt_sharp,
+                                  isPenilaian: true), // --------- Mahasiswa
                             // --------- Dospem---------------------------------
                             if (userType == 'dosen_pembimbing')
                               _Menu_KKN('Program kerja', bluedark,
@@ -230,7 +234,7 @@ class BerandaView extends GetView<BerandaController> {
                             }),
                             Container(
                               padding: const EdgeInsets.fromLTRB(30, 0, 30, 10),
-                              height: mdsize.height,
+                              height: mdsize.height * 0.5,
                               child: _pageViewBeranda(mdsize),
                             )
                           ],
@@ -278,12 +282,70 @@ class BerandaView extends GetView<BerandaController> {
       onPageChanged: ((value) {
         controller.onPageChanged(value);
       }),
-      children: [
-        _dataKelompok(mdsize),
-        const Center(child: Text('Data Kelompok')),
-        const Center(child: Text('Data Kelompok')),
-      ],
+      children: [_dataKelompok(mdsize), _dataBimbingan(), _dataSidang()],
     );
+  }
+
+  _dataSidang() {
+    return Obx(() {
+      final sidang = controller.allSidang.value.sidangModel;
+      return sidang != null
+          ? ListView(
+              children: [
+                Center(
+                  child: Text(
+                    'Jadwal sidang',
+                    style: TextStyle(
+                        color: bluedark,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+                for (int i = 0; i < sidang.length; i++)
+                  Container(
+                      padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                      decoration: const BoxDecoration(
+                          border: Border(bottom: BorderSide(width: 0.5))),
+                      child: Column(
+                        children: [
+                          _rowData('Judul Sidang', sidang[i].judulSidang),
+                          _rowData('Body Sidang', sidang[i].body),
+                          _rowData('Tanggal Sidang', sidang[i].tanggalSidang),
+                        ],
+                      ))
+              ],
+            )
+          : const Center(child: Text('Anda Belum memiliki jadwal sidang'));
+    });
+  }
+
+  _dataBimbingan() {
+    return Obx(() {
+      final bimbingan = controller.bimbingan.value;
+      return controller.bimbingan.value.judul != null
+          ? Container(
+              padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
+              child: Column(
+                children: [
+                  Text(
+                    'Jadwal bimbingan',
+                    style: TextStyle(
+                        color: bluedark,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 20),
+                  _rowData('Judul', bimbingan.judul),
+                  _rowData('Body', bimbingan.body),
+                  _rowData('Tanggal', bimbingan.tanggalBimbingan),
+                  _rowData('Link', bimbingan.linkBimbingan)
+                ],
+              ),
+            )
+          : const Center(
+              child: Text('Anda belum memiilki jadwal bimbingan'),
+            );
+    });
   }
 
   _Menu_KKN(String judul, color, IconData icon,
@@ -293,6 +355,7 @@ class BerandaView extends GetView<BerandaController> {
       bool isProgram = false,
       bool isProgramDospem = false,
       bool isLaporan = false,
+      bool isPenilaian = false,
       bool isBimbinganDospem = false,
       bool isLaporanDospem = false,
       bool isSidangDospem = false,
@@ -302,21 +365,21 @@ class BerandaView extends GetView<BerandaController> {
       width: 90,
       child: GestureDetector(
         onTap: () {
+          final kelompok = controller.Kelompok.value;
           if (isBack) {
             _DialogKeluar();
           } else if (isDaftar && user!.isNotEmpty) {
-            final kelompok = controller.Kelompok;
-            if (kelompok.value.idKelompok != null &&
-                kelompok.value.approve != 'reject') {
-              Get.toNamed('review', arguments: kelompok.value);
+            if (kelompok.idKelompok != null && kelompok.approve != 'reject') {
+              Get.toNamed('review', arguments: kelompok);
             } else {
               Get.toNamed('daftarkkn');
             }
           } else if (isProgram && user!.isNotEmpty) {
             _isProgram();
           } else if (isLaporan && user!.isNotEmpty) {
-            final kelompok = controller.Kelompok.value;
             Get.toNamed('laporan', arguments: kelompok);
+          } else if (isPenilaian && user!.isNotEmpty) {
+            Get.toNamed('penilaian', arguments: kelompok);
           } else if (page != null) {
             Get.toNamed(page);
           } else if (user!.isEmpty) {
@@ -459,18 +522,19 @@ class BerandaView extends GetView<BerandaController> {
           ? Column(
               children: [
                 Container(
+                    padding: const EdgeInsets.only(top: 20),
                     color: Colors.white,
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                              margin: const EdgeInsets.only(bottom: 10),
-                              child: Center(
-                                  child: Text('Data pendaftaran',
-                                      style: TextStyle(
-                                          color: bluedark,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600)))),
+                          Text(
+                            'Pendaftaran kelompok',
+                            style: TextStyle(
+                                color: bluedark,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 20),
                           _rowData('No Kelompok', kelompok.idKelompok),
                           _rowData('Nim Ketua ', kelompok.nimKetuaKelompok),
                           _rowData('Penangung ', kelompok.penanggungJawab),
@@ -483,12 +547,20 @@ class BerandaView extends GetView<BerandaController> {
                                           color: bluedark,
                                           fontWeight: FontWeight.w600,
                                           fontSize: 14)))),
-                          const Divider(),
-                          for (int i = 0; i < kelompok.anggota!.length; i++)
-                            _rowData(
-                              'Nama Anggota',
-                              kelompok.anggota![i].detail?.nama,
-                            )
+                          Container(
+                            height: mdsize.height * 0.1,
+                            child: ListView(
+                              children: [
+                                for (int i = 0;
+                                    i < kelompok.anggota!.length;
+                                    i++)
+                                  _rowData(
+                                    'Nama Anggota',
+                                    kelompok.anggota![i].detail?.nama,
+                                  )
+                              ],
+                            ),
+                          )
                         ])),
               ],
             )
@@ -496,7 +568,7 @@ class BerandaView extends GetView<BerandaController> {
     });
   }
 
-  _rowData(String label, dynamic kelompok) {
+  _rowData(String label, dynamic value) {
     return Container(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -506,7 +578,7 @@ class BerandaView extends GetView<BerandaController> {
                 style: const TextStyle(fontWeight: FontWeight.w600))),
         const Text(':  '),
         Expanded(
-            child: SizedBox(width: double.infinity, child: Text('${kelompok}')))
+            child: SizedBox(width: double.infinity, child: Text('${value}')))
       ]),
     );
   }

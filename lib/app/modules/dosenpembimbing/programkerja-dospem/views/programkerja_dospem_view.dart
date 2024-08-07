@@ -45,6 +45,7 @@ class ProgramkerjaDospemView extends GetView<ProgramkerjaDospemController> {
                 children: [
                   _btnPageView(currenStep, 0, 'Review'),
                   _btnPageView(currenStep, 1, 'Approve'),
+                  _btnPageView(currenStep, 2, 'Reject'),
                 ],
               ),
             );
@@ -106,7 +107,22 @@ class ProgramkerjaDospemView extends GetView<ProgramkerjaDospemController> {
                   ? ListView(
                       children: [
                         for (int i = 0; i < prokerApprove.length; i++)
-                          _dataProkerview(prokerApprove[i], i, context, review: false)
+                          _dataProkerview(prokerApprove[i], i, context,
+                              review: false)
+                      ],
+                    )
+                  : const Center(child: Text('Data program kerja kosong'));
+            }),
+            Obx(() {
+              final prokerApprove =
+                  controller.allProkerReject.value.programKerja;
+
+              return prokerApprove != null
+                  ? ListView(
+                      children: [
+                        for (int i = 0; i < prokerApprove.length; i++)
+                          _dataProkerview(prokerApprove[i], i, context,
+                              review: false)
                       ],
                     )
                   : const Center(child: Text('Data program kerja kosong'));
@@ -137,7 +153,8 @@ class ProgramkerjaDospemView extends GetView<ProgramkerjaDospemController> {
                       width: 60,
                       height: 60,
                       decoration: BoxDecoration(
-                          color: bluedark,
+                          color:
+                              proker.approve == 'reject' ? redglobal : greenglo,
                           borderRadius:
                               const BorderRadius.all(Radius.circular(5))),
                       child: Column(
@@ -161,29 +178,59 @@ class ProgramkerjaDospemView extends GetView<ProgramkerjaDospemController> {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 5),
+                    SizedBox(
+                      height: 30,
+                      width: 60,
+                      child: MaterialButton(
+                          color:
+                              proker.approve == 'reject' ? redglobal : greenglo,
+                          onPressed: () {
+                            final String pdfUrl =
+                                'https://drive.google.com/uc?export=view&id=${proker.bodyProker}';
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    child: SfPdfViewer.network(pdfUrl),
+                                  );
+                                });
+                          },
+                          child: const Text('PDF',
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 12))),
+                    ),
                   ],
                 ),
                 const SizedBox(width: 7),
                 Expanded(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         '${proker.judulProker}',
-                        style: const TextStyle(fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: proker.approve == 'reject'
+                                ? redglobal
+                                : greenglo,
+                            fontSize: 16),
                       ),
                       const SizedBox(height: 5),
                       Text('${proker.bodyProker}',
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                              color: greenglo)),
-                      Text('${proker.updateAt}',
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                              color: greenglo)),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          )),
+                      const SizedBox(height: 5),
+                      _rowData(
+                          'Mulai', proker.tanggalMulai ?? 'Tanggal Kosong'),
+                      const SizedBox(height: 5),
+                      _rowData(
+                          'Selesai', proker.tanggalMulai ?? 'Tanggal Kosong'),
                     ],
                   ),
                 ),
@@ -198,7 +245,7 @@ class ProgramkerjaDospemView extends GetView<ProgramkerjaDospemController> {
                             index + 1 == controller.indexBtn.value
                         ? 0.50
                         : 0, // 0.25 turns equal to 90 degrees (right to up)
-                    duration: Duration(milliseconds: 400),
+                    duration: const Duration(milliseconds: 400),
                     curve: Curves.easeInOut,
                     child: MaterialButton(
                         onPressed: () {
@@ -213,24 +260,6 @@ class ProgramkerjaDospemView extends GetView<ProgramkerjaDospemController> {
                         child: Icon(Icons.arrow_drop_down_sharp,
                             size: 30, color: bluedark)),
                   ),
-                  const SizedBox(width: 5),
-                  MaterialButton(
-                      color: bluedark,
-                      onPressed: () {
-                        final String pdfUrl =
-                            'https://drive.google.com/uc?export=view&id=${proker.bodyProker}';
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Container(
-                                width: double.infinity,
-                                height: double.infinity,
-                                child: SfPdfViewer.network(pdfUrl),
-                              );
-                            });
-                      },
-                      child: const Text('Lihat PDF',
-                          style: TextStyle(color: Colors.white, fontSize: 12))),
                 ],
               ),
             controller.updateProker.value == 1 &&
@@ -281,7 +310,8 @@ class ProgramkerjaDospemView extends GetView<ProgramkerjaDospemController> {
     return SizedBox(
         height: 40,
         width: double.infinity,
-        child: ElevatedButton(
+        child: MaterialButton(
+            color: greenglo,
             onPressed: () {
               final id = idProker;
               final ProgramKerjaGet proker =
@@ -290,5 +320,18 @@ class ProgramkerjaDospemView extends GetView<ProgramkerjaDospemController> {
             },
             child:
                 const Text('Simpan', style: TextStyle(color: Colors.white))));
+  }
+
+  _rowData(String label, value) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 80,
+          child: Text(label),
+        ),
+        const Text(': '),
+        Expanded(child: Text(value))
+      ],
+    );
   }
 }

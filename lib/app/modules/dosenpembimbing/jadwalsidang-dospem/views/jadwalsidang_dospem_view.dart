@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names, use_super_parameters
+
 import 'package:bebas/app/data/model/sidang_model.dart';
 import 'package:flutter/material.dart';
 
@@ -21,29 +23,27 @@ class JadwalsidangDospemView extends GetView<JadwalsidangDospemController> {
           title: const Text('JadwalsidangDospemView'),
           centerTitle: true,
         ),
-        body: Container(
-          child: Column(children: [
-            _CardFormInput(context),
-            Expanded(child: Obx(() {
-              final sidang = controller.allSidang.value.sidangModel;
-              if (sidang != null) {
-                return Container( 
-                  padding: EdgeInsets.all(20),
-                  child: ListView(
-                    children: [
-                      for (int i = 0; i < sidang.length; i++)
-                        _loadDataSidang(i, sidang[i]),
-                    ],
-                  ),
-                );
-              } else {
-                return Center(
-                  child: Text('data kosong'),
-                );
-              }
-            }))
-          ]),
-        ));
+        body: Column(children: [
+          _CardFormInput(context),
+          Expanded(child: Obx(() {
+            final sidang = controller.allSidang.value.sidangModel;
+            if (sidang != null) {
+              return Container(
+                padding: const EdgeInsets.all(20),
+                child: ListView(
+                  children: [
+                    for (int i = 0; i < sidang.length; i++)
+                      _loadDataSidang(i, sidang[i]),
+                  ],
+                ),
+              );
+            } else {
+              return const Center(
+                child: Text('data kosong'),
+              );
+            }
+          }))
+        ]));
   }
 
   _CardFormInput(context) {
@@ -137,6 +137,7 @@ class JadwalsidangDospemView extends GetView<JadwalsidangDospemController> {
 
   _loadDataSidang(index, SidangModel sidang) {
     return Container(
+      margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,7 +175,7 @@ class JadwalsidangDospemView extends GetView<JadwalsidangDospemController> {
                 Text(
                   '${sidang.judulSidang}',
                   style:
-                      TextStyle(fontWeight: FontWeight.w600, color: bluedark),
+                      TextStyle(fontWeight: FontWeight.w600, color: greenglo),
                 ),
                 const SizedBox(height: 5),
                 Text('${sidang.body}',

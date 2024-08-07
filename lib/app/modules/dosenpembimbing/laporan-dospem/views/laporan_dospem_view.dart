@@ -88,25 +88,24 @@ class LaporanDospemView extends GetView<LaporanDospemController> {
                       ],
                     ),
                   ),
-                  MaterialButton(
-                      onPressed: () {
-                        final fileName = laporan.fileLaporan;
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return SfPdfViewer.network(
-                                  'https://kkn.proyek.org/storage/$fileName');
-                            });
-                      },
-                      child: Row(
-                        children: [
-                          Icon(Icons.remove_red_eye, color: greenglo),
-                          const SizedBox(
-                            width: 2,
-                          ),
-                          Text("pdf", style: TextStyle(color: greenglo))
-                        ],
-                      ))
+                 const  SizedBox(height:5),
+                  SizedBox(
+                    width: 60,
+                    height:30,
+                    child: MaterialButton(
+                        color: greenglo,
+                        onPressed: () {
+                          final fileName = laporan.fileLaporan;
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return SfPdfViewer.network(
+                                    'https://kkn.proyek.org/storage/$fileName');
+                              });
+                        },
+                        child: const Text("PDF",
+                            style: TextStyle(color: Colors.white))),
+                  )
                 ],
               ),
               const SizedBox(
@@ -114,7 +113,7 @@ class LaporanDospemView extends GetView<LaporanDospemController> {
               ),
               Expanded(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -134,23 +133,27 @@ class LaporanDospemView extends GetView<LaporanDospemController> {
                         const SizedBox(height: 5),
                         _btnUpdateStatus(context, laporan.idLaporan)
                       ]),
-                    IconButton(
-                        onPressed: () {
-                          !controller.isDetailData.value
-                              ? controller.isDetailData.value = true
-                              : controller.isDetailData.value = false;
+                    laporan.approve != 'approve'
+                        ? IconButton(
+                            onPressed: () {
+                              !controller.isDetailData.value
+                                  ? controller.isDetailData.value = true
+                                  : controller.isDetailData.value = false;
 
-                          controller.indexDetailData.value = index + 1;
-                        },
-                        icon: AnimatedRotation(
-                            turns:
-                                index + 1 == controller.indexDetailData.value &&
+                              controller.indexDetailData.value = index + 1;
+                            },
+                            icon: AnimatedRotation(
+                                turns: index + 1 ==
+                                            controller.indexDetailData.value &&
                                         controller.isDetailData.value
                                     ? 0.50
                                     : 0,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                            child: const Icon(Icons.arrow_drop_down_rounded)))
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                                child:
+                                    const Icon(Icons.arrow_drop_down_rounded)))
+                        : Text('Status sudah di perbaharui',
+                            style: TextStyle(color: bluedark,fontWeight: FontWeight.w500,height: 3))
                   ],
                 ),
               ),
@@ -210,17 +213,20 @@ class LaporanDospemView extends GetView<LaporanDospemController> {
                       final idLaporan = id;
                       final approve = controller.Dropdownvalue.value;
                       final idKelompok = controller.kelompok.idKelompok;
-                      LaporanModel laporan = LaporanModel(approve: approve,idKelompok: idKelompok);
+                      LaporanModel laporan = LaporanModel(
+                          approve: approve, idKelompok: idKelompok);
                       controller.btnUpdateStatus(idLaporan, laporan);
                     },
-                    child: const Text('Iya', style: TextStyle(color: Colors.white)),
+                    child: const Text('Iya',
+                        style: TextStyle(color: Colors.white)),
                   ),
                   cancel: MaterialButton(
                     color: redglobal,
                     onPressed: () {
                       Get.back();
                     },
-                    child: const Text('Batal',  style: TextStyle(color: Colors.white)),
+                    child: const Text('Batal',
+                        style: TextStyle(color: Colors.white)),
                   ),
                   titleStyle:
                       TextStyle(color: greenglo, fontWeight: FontWeight.w600),

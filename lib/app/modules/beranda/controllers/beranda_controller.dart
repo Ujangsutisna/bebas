@@ -5,6 +5,7 @@ import 'package:bebas/app/data/model/agenda_model.dart';
 import 'package:bebas/app/data/model/bimbingan_model.dart';
 import 'package:bebas/app/data/model/mahasiswa_model.dart';
 import 'package:bebas/app/data/model/kelompokget_model.dart';
+import 'package:bebas/app/data/model/sidang_model.dart';
 import 'package:bebas/app/data/model/user_model.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -15,12 +16,13 @@ class BerandaController extends GetxController {
   Rx<KelompokGet> Kelompok = KelompokGet().obs;
   Rx<Allkelompokget> allKelompok = Allkelompokget().obs;
   Rx<BimbinganModel> bimbingan = BimbinganModel().obs;
+  Rx<AllSidangModel> allSidang = AllSidangModel().obs;
   Rx<DataUser> dataUser = DataUser().obs;
 
   List<dynamic> menuPageView = [
     'Pendaftaran',
-    'Program kerja',
-    'bimbingan',
+    'Bimbingan',
+    'JadwaL Sidang',
   ];
   var userType = ''.obs;
   final PageViewCtrl = PageController();
@@ -36,8 +38,8 @@ class BerandaController extends GetxController {
 
   @override
   void onReady() {
-    LoadData();
     super.onReady();
+    LoadData();
   }
 
   @override
@@ -74,6 +76,26 @@ class BerandaController extends GetxController {
       _LoadKelompok(userID!);
       _LoadProgramKerja();
       _loadBimbingan();
+      _loadJadwalSidang();
+    }
+  }
+
+  _loadJadwalSidang() async {
+    try {
+      final response = await ApiClient().get('api/sidang');
+      List<dynamic> dataSidang = response.data;
+      final dataSidangLength = dataSidang.length;
+      List<dynamic> allSidangById = [];
+      for (int i = 0; i < dataSidangLength; i++) {
+        if (dataSidang[i]['id_kelompok'] == Kelompok.value.idKelompok) {
+          allSidangById.add(dataSidang[i]);
+        }
+      }
+      if (allSidangById.isNotEmpty) {
+        allSidang.value = AllSidangModel.fromJson(allSidangById);
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -116,17 +138,23 @@ class BerandaController extends GetxController {
   }
 
   _loadBimbingan() async {
-    final response = await ApiClient().get('api/bimbingan');
-    List<dynamic> dataBimbingan = response.data;
-    final bimbinganLength = dataBimbingan.length;
-    dynamic bimbinganLastByiD;
-    for (int i = 0; i < bimbinganLength; i++) {
-      if (dataBimbingan[i]['id_kelopok'] == Kelompok.value.idKelompok) {
-        bimbinganLastByiD = dataBimbingan[i];
+    try {
+      final response = await ApiClient().get('api/bimbingan');
+      List<dynamic> dataBimbingan = response.data;
+
+      final bimbinganLength = dataBimbingan.length;
+      dynamic bimbinganLastByiD;
+      for (int i = 0; i < bimbinganLength; i++) {
+        if (dataBimbingan[i]['id_kelompok'] == Kelompok.value.idKelompok) {
+          bimbinganLastByiD = response.data[i];
+        }
       }
-    }
-    if (bimbinganLastByiD != null) {
-      print('Data Bimbingan : $bimbinganLastByiD');
+
+      if (bimbinganLastByiD != null) {
+        bimbingan.value = BimbinganModel.fromJson(bimbinganLastByiD);
+      }
+    } catch (e) {
+      print(e);
     }
   }
 

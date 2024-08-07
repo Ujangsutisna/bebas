@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 class KelompokDospemController extends GetxController {
   //TODO: Implement KelompokDospemController
-   DataUser dataUser = Get.arguments[0];
+  DataUser dataUser = Get.arguments[0];
   Rx<Allkelompokget> allKelompok = Allkelompokget().obs;
 
   final count = 0.obs;
@@ -27,11 +27,22 @@ class KelompokDospemController extends GetxController {
     super.onClose();
   }
 
-  loadMahasiswaByID() {}
+  loadData() {
+    for (int i = 0; i < allKelompok.value.kelompokGet!.length; i++) {
+      
+    }
+  }
+
+  loadMahasiswaByID(int id) async {
+    try {
+      final response = await ApiClient().get('api/mahasiswa/$id');
+    } catch (e) {
+      print(e);
+    }
+  }
 
   LoadKelompokByIDDospem() async {
     try {
-
       final userID = dataUser.ID;
       final response = await ApiClient().get('api/kelompok/');
 
@@ -39,7 +50,7 @@ class KelompokDospemController extends GetxController {
       int lastIndex = dataArray.length;
       List<dynamic> data = [];
       for (int i = 0; i < lastIndex; i++) {
-        if (response.data[i]['id_dospem'] == userID) {
+        if (response.data[i]['id_dospem'] == userID && dataArray[i]['approve'] != 'reject') {
           data.add(response.data[i]);
         }
       }

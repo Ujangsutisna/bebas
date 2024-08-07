@@ -1,12 +1,10 @@
-import 'dart:io';
-
 import 'package:bebas/app/data/Helpers/user_info.dart';
 import 'package:dio/dio.dart';
 
 final Dio dio = Dio(BaseOptions(
     baseUrl: 'http://kkn.proyek.org/',
-    connectTimeout: const Duration(seconds: 10),
-    receiveTimeout: const Duration(seconds: 6)));
+    connectTimeout: const Duration(seconds: 12),
+    receiveTimeout: const Duration(seconds: 9)));
 final userInfo = UserInfo();
 
 Token() async {
@@ -26,6 +24,7 @@ class ApiClient {
               'Authorization': 'Bearer $token',
               'Content-Type': 'application/json',
               'X-Requested-With': 'XMLHttpRequest',
+              'X-ls-Our-Team': '1'
             },
             validateStatus: (status) {
               return status != null &&
@@ -57,6 +56,7 @@ class ApiClient {
                 'Authorization': 'Bearer $dataToken',
                 'X-Requested-With': 'XMLHttpRequest',
                 'Content-Type': 'application/json',
+                'X-ls-Our-Team': '1'
               },
               validateStatus: (status) {
                 print(status);
@@ -78,12 +78,12 @@ class ApiClient {
 
   Future<Response> postFile(String path, dynamic data) async {
     try {
-     FormData  formData = FormData.fromMap( {
+      FormData formData = FormData.fromMap({
         'title': data[0],
         'body': data[1],
-        'file_laporan':await MultipartFile.fromFile(
-          data[2].path, // Membaca file sebagai stream
-           filename: data[3])
+        'file_laporan': await MultipartFile.fromFile(
+            data[2].path, // Membaca file sebagai stream
+            filename: data[3])
       });
       final dataToken = await Token();
       print(dataToken);
@@ -94,6 +94,7 @@ class ApiClient {
                 'Authorization': 'Bearer $dataToken',
                 'X-Requested-With': 'XMLHttpRequest',
                 'Content-Type': 'multipart/form-data',
+                'X-ls-Our-Team': '1'
               },
               validateStatus: (status) {
                 print(status);
@@ -122,7 +123,8 @@ class ApiClient {
               headers: {
                 'Authorization': 'Bearer $dataToken',
                 'X-Requested-With': 'XMLHttpRequest',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-ls-Our-Team': '1'
               },
               validateStatus: (status) {
                 print(status);
@@ -152,3 +154,4 @@ class ApiClient {
     }
   }
 }
+ 
