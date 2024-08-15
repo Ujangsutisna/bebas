@@ -31,6 +31,9 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/Logo1.png
+    - assets/images/idGdrive.png
+    - assets/images/aksesumum.png
+    - assets/images/jendela.png
     - assets/images/review.png
     - assets/images/approve.png
 flutter_native_splash:

@@ -1,5 +1,4 @@
 import 'package:bebas/app/data/model/bimbingan_model.dart';
-import 'package:bebas/app/data/model/kelompokget_model.dart';
 import 'package:bebas/app/modules/Login/views/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,11 +11,15 @@ class BimbinganDospemView extends GetView<BimbinganDospemController> {
   Widget build(BuildContext context) {
     controller.onReady();
     final mdSize = MediaQuery.of(context).size;
-    KelompokGet kelompok = Get.arguments;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BimbinganDospemView'),
-        centerTitle: true,
+        title: const Text(
+          'Bimbingan',
+          style: TextStyle(
+              color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),
+        ),
+
       ),
       body: Container(
         width: mdSize.width,
@@ -28,24 +31,26 @@ class BimbinganDospemView extends GetView<BimbinganDospemController> {
                 border:
                     Border(bottom: BorderSide(width: 0.5, color: bluedark))),
             padding: const EdgeInsets.fromLTRB(25, 10, 25, 10),
-            child: _formInput(kelompok, context),
+            child: _formInput(context),
           ),
           Expanded(
             child: Obx(() {
               final bimbingan = controller.allBimbingan.value.bimbinganModel;
-              return bimbingan != null
-                  ? Container(
-                      padding: EdgeInsets.all(20),
-                      child: ListView(
-                        children: [
-                          for (int i = 0; i < bimbingan.length; i++)
-                            loadDataBimbingan(bimbingan[i], i)
-                        ],
-                      ),
-                    )
-                  : const Center(
-                      child: Text('Bimbingan kosong'),
-                    );
+              return controller.loadBimbingan.value
+                  ? Center(child: CircularProgressIndicator())
+                  : bimbingan != null
+                      ? Container(
+                          padding: EdgeInsets.all(20),
+                          child: ListView(
+                            children: [
+                              for (int i = 0; i < bimbingan.length; i++)
+                                loadDataBimbingan(bimbingan[i], i)
+                            ],
+                          ),
+                        )
+                      : const Center(
+                          child: Text('Bimbingan kosong'),
+                        );
             }),
           )
         ]),
@@ -53,20 +58,24 @@ class BimbinganDospemView extends GetView<BimbinganDospemController> {
     );
   }
 
-  _formInput(KelompokGet kelompok, context) {
+  _formInput(context) {
     return Form(
       key: controller.formKey,
       child: Column(
         children: [
           _textFieldInput('Judul Bimbingan', controller.titleCtrl),
-          _textFieldInput('Body Bimbingan', controller.bodyCtrl, maxLines: 2),
+          _textFieldInput('Isi Bimbingan', controller.bodyCtrl, maxLines: 2),
+          SizedBox(height: 5),
           Row(
             children: [
-              Expanded(child: _textFieldInput('Link', controller.linkCtrl)),
+              Expanded(
+                  child: _textFieldInput(
+                      'Link = https://....com', controller.linkCtrl,
+                      link: true)),
               const SizedBox(width: 10),
               Expanded(
-                  child: _fieldInputDate(context, controller.tanggalCtrl,
-                      'Tanggal bimbingan', kelompok)),
+                  child: _fieldInputDate(
+                      context, controller.tanggalCtrl, 'Tanggal bimbingan')),
             ],
           ),
           const SizedBox(height: 10),
@@ -98,11 +107,12 @@ class BimbinganDospemView extends GetView<BimbinganDospemController> {
     );
   }
 
-  _textFieldInput(String label, ctrl, {int maxLines = 1}) {
+  _textFieldInput(String label, ctrl, {int maxLines = 1, bool link = false}) {
     return TextFormField(
         maxLines: maxLines,
         controller: ctrl,
-        decoration: InputDecoration(labelText: label),
+        decoration: InputDecoration(
+            labelText: link ? null : label, hintText: link ? label : null),
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Data tidak boleh kososng';
@@ -112,12 +122,12 @@ class BimbinganDospemView extends GetView<BimbinganDospemController> {
         });
   }
 
-  Widget _fieldInputDate(BuildContext context, TextEditingController ctrl,
-      String label, KelompokGet kelompok) {
+  Widget _fieldInputDate(
+      BuildContext context, TextEditingController ctrl, String label) {
     return TextFormField(
       controller: ctrl,
       readOnly: true,
-      decoration: InputDecoration(labelText: label),
+      decoration: InputDecoration(hintText: label),
       onTap: () async {
         DateTime firstDate = DateTime(2020);
         DateTime lastDate = DateTime(2035);
@@ -127,14 +137,6 @@ class BimbinganDospemView extends GetView<BimbinganDospemController> {
           initialDate: initialDate,
           firstDate: firstDate,
           lastDate: lastDate,
-          onDatePickerModeChange: (mode) {
-            if (mode == DatePickerEntryMode.input) {
-              Get.back();
-            }
-          }, // Disable further switches
-
-          switchToInputEntryModeIcon:
-              const Icon(Icons.close, color: Colors.white), // Transparent icon
         );
 
         if (pickedDate != null) {

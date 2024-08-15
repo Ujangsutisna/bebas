@@ -85,47 +85,54 @@ class ProgramkerjaDospemView extends GetView<ProgramkerjaDospemController> {
             Obx(() {
               final prokerReview =
                   controller.allProkerReview.value.programKerja;
-
-              return controller.allProkerReview.value.programKerja != null
-                  ? ListView(
-                      children: [
-                        for (int i = 0;
-                            i <
-                                controller
-                                    .allProkerReview.value.programKerja!.length;
-                            i++)
-                          _dataProkerview(prokerReview![i], i, context)
-                      ],
-                    )
-                  : const Center(child: Text('Data program kerja kosong'));
+              print(prokerReview);
+              return controller.loadProgramKerja.value
+                  ? const Center(child: CircularProgressIndicator())
+                  : controller.allProkerReview.value.programKerja != null &&
+                          prokerReview!.isNotEmpty
+                      ? ListView(
+                          children: [
+                            for (int i = 0;
+                                i <
+                                    controller.allProkerReview.value
+                                        .programKerja!.length;
+                                i++)
+                              _dataProkerview(prokerReview![i], i, context)
+                          ],
+                        )
+                      : const Center(child: Text('Data program kerja kosong'));
             }),
             Obx(() {
               final prokerApprove =
                   controller.allProkerApprove.value.programKerja;
 
-              return prokerApprove != null
-                  ? ListView(
-                      children: [
-                        for (int i = 0; i < prokerApprove.length; i++)
-                          _dataProkerview(prokerApprove[i], i, context,
-                              review: false)
-                      ],
-                    )
-                  : const Center(child: Text('Data program kerja kosong'));
+              return controller.loadProgramKerja.value
+                  ? const Center(child: CircularProgressIndicator())
+                  : prokerApprove != null
+                      ? ListView(
+                          children: [
+                            for (int i = 0; i < prokerApprove.length; i++)
+                              _dataProkerview(prokerApprove[i], i, context,
+                                  review: false)
+                          ],
+                        )
+                      : const Center(child: Text('Data program kerja kosong'));
             }),
             Obx(() {
               final prokerApprove =
                   controller.allProkerReject.value.programKerja;
 
-              return prokerApprove != null
-                  ? ListView(
-                      children: [
-                        for (int i = 0; i < prokerApprove.length; i++)
-                          _dataProkerview(prokerApprove[i], i, context,
-                              review: false)
-                      ],
-                    )
-                  : const Center(child: Text('Data program kerja kosong'));
+              return controller.loadProgramKerja.value
+                  ? const Center(child: CircularProgressIndicator())
+                  : prokerApprove != null
+                      ? ListView(
+                          children: [
+                            for (int i = 0; i < prokerApprove.length; i++)
+                              _dataProkerview(prokerApprove[i], i, context,
+                                  review: false)
+                          ],
+                        )
+                      : const Center(child: Text('Data program kerja kosong'));
             }),
           ]),
     );
@@ -231,37 +238,32 @@ class ProgramkerjaDospemView extends GetView<ProgramkerjaDospemController> {
                       const SizedBox(height: 5),
                       _rowData(
                           'Selesai', proker.tanggalMulai ?? 'Tanggal Kosong'),
+                      if (review)
+                        MaterialButton(
+                            onPressed: () {
+                              if (controller.updateProker.value == 0) {
+                                controller.updateProker.value = 1;
+                                controller.indexBtn.value = index + 1;
+                              } else {
+                                controller.updateProker.value = 0;
+                                controller.indexBtn.value = index;
+                              }
+                            },
+                            child: AnimatedRotation(
+                              turns: controller.updateProker.value == 1 &&
+                                      index + 1 == controller.indexBtn.value
+                                  ? 0.50
+                                  : 0, // 0.25 turns equal to 90 degrees (right to up)
+                              duration: const Duration(milliseconds: 400),
+                              curve: Curves.easeInOut,
+                              child: Icon(Icons.arrow_drop_down_rounded,
+                                  size: 30, color: bluedark),
+                            )),
                     ],
                   ),
                 ),
               ],
             ),
-            if (review)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  AnimatedRotation(
-                    turns: controller.updateProker.value == 1 &&
-                            index + 1 == controller.indexBtn.value
-                        ? 0.50
-                        : 0, // 0.25 turns equal to 90 degrees (right to up)
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeInOut,
-                    child: MaterialButton(
-                        onPressed: () {
-                          if (controller.updateProker.value == 0) {
-                            controller.updateProker.value = 1;
-                            controller.indexBtn.value = index + 1;
-                          } else {
-                            controller.updateProker.value = 0;
-                            controller.indexBtn.value = index;
-                          }
-                        },
-                        child: Icon(Icons.arrow_drop_down_sharp,
-                            size: 30, color: bluedark)),
-                  ),
-                ],
-              ),
             controller.updateProker.value == 1 &&
                     index + 1 == controller.indexBtn.value
                 ? Column(children: [

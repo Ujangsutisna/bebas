@@ -11,6 +11,7 @@ class JadwalsidangDospemController extends GetxController {
   TextEditingController bodyCtrl = TextEditingController();
   TextEditingController tanggalSidangCtrl = TextEditingController();
   Rx<AllSidangModel> allSidang = AllSidangModel().obs;
+  Rx<bool> loadSidang = true.obs;
   var selectedDate = DateTime.now().obs;
   KelompokGet kelompok = Get.arguments;
 
@@ -35,19 +36,28 @@ class JadwalsidangDospemController extends GetxController {
     selectedDate.value = newDate;
   }
 
+  clearCtrl() {
+    titleCtrl.clear();
+    bodyCtrl.clear();
+    tanggalSidangCtrl.clear();
+  }
+
   loadDataSidang() async {
     try {
       final response = await ApiClient().get('api/sidang');
-      List<dynamic> allSidangByid = [];
-      List<dynamic> sidang = response.data;
-      final sidangLength = sidang.length;
-      for (int i = 0; i < sidangLength; i++) {
-        if (sidang[i]['id_kelompok'] == kelompok.idKelompok) {
-          allSidangByid.add(sidang[i]);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        List<dynamic> allSidangByid = [];
+        List<dynamic> sidang = response.data;
+        final sidangLength = sidang.length;
+        for (int i = 0; i < sidangLength; i++) {
+          if (sidang[i]['id_kelompok'] == kelompok.idKelompok) {
+            allSidangByid.add(sidang[i]);
+          }
         }
-      }
-      if (allSidangByid.isNotEmpty) {
-        allSidang.value = AllSidangModel.fromJson(allSidangByid);
+        if (allSidangByid.isNotEmpty) {
+          allSidang.value = AllSidangModel.fromJson(allSidangByid);
+        }
+        loadSidang.value = false;
       }
     } catch (e) {
       print('Error : $e');
@@ -59,6 +69,8 @@ class JadwalsidangDospemController extends GetxController {
       var data = sidang.toJson();
       final response = await ApiClient().post('api/sidang', data);
       if (response.statusCode == 200 || response.statusCode == 201) {
+        loadDataSidang();
+        clearCtrl();
         Get.snackbar('Berhasil', response.data['message'],
             colorText: Colors.white, backgroundColor: Colors.green);
       } else {

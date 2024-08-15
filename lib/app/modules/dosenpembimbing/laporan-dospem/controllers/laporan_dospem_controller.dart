@@ -10,7 +10,7 @@ class LaporanDospemController extends GetxController {
   //TODO: Implement LaporanDospemController
   KelompokGet kelompok = Get.arguments;
   Rx<AllLaporanModel> allLaporan = AllLaporanModel().obs;
-  Rx<bool> isdatalaporan = false.obs;
+  Rx<bool> loadLaporan = true.obs;
   Rx<bool> isDetailData = false.obs;
   Rx<int> indexDetailData = 0.obs;
   Rx<String> Dropdownvalue = 'approve'.obs;
@@ -34,18 +34,20 @@ class LaporanDospemController extends GetxController {
   viewLaporan() async {
     try {
       final response = await ApiClient().get('api/laporan');
-      List<dynamic> laporan = response.data;
-      final lengthLaporan = laporan.length;
-      List<dynamic> allLaporanByKelompok = [];
-      for (int i = 0; i < lengthLaporan; i++) {
-        if (laporan[i]['id_kelompok'] == kelompok.idKelompok) {
-          allLaporanByKelompok.add(laporan[i]);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        List<dynamic> laporan = response.data;
+        final lengthLaporan = laporan.length;
+        List<dynamic> allLaporanByKelompok = [];
+        for (int i = 0; i < lengthLaporan; i++) {
+          if (laporan[i]['id_kelompok'] == kelompok.idKelompok) {
+            allLaporanByKelompok.add(laporan[i]);
+          }
         }
+        if (allLaporanByKelompok.isNotEmpty) {
+          allLaporan.value = AllLaporanModel.fromJson(allLaporanByKelompok);
+        } else {}
+        loadLaporan.value = false;
       }
-      if (allLaporanByKelompok.isNotEmpty) {
-        allLaporan.value = AllLaporanModel.fromJson(allLaporanByKelompok);
-        isdatalaporan.value = true;
-      } else {}
     } catch (e) {
       print('Error: $e');
     }
@@ -53,14 +55,15 @@ class LaporanDospemController extends GetxController {
 
   btnUpdateStatus(int? id, LaporanModel laporan) async {
     try {
-      print('id:$id');
       var data = laporan.toJsonStatus();
       print(data);
       final response = await ApiClient().put('api/laporan/$id/status', data);
       if (response.statusCode == 200 || response.statusCode == 201) {
+        indexDetailData = 0.obs;
+        isDetailData.value = false;
         viewLaporan();
         Get.back();
-        Get.snackbar('Berhasil', response.data['message' ],
+        Get.snackbar('Berhasil', response.data['message'],
             backgroundColor: Colors.green, colorText: Colors.white);
       } else {
         Get.back();

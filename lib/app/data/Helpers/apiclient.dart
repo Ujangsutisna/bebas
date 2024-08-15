@@ -3,8 +3,8 @@ import 'package:dio/dio.dart';
 
 final Dio dio = Dio(BaseOptions(
     baseUrl: 'http://kkn.proyek.org/',
-    connectTimeout: const Duration(seconds: 12),
-    receiveTimeout: const Duration(seconds: 9)));
+    connectTimeout: const Duration(seconds: 7),
+    receiveTimeout: const Duration(seconds: 5)));
 final userInfo = UserInfo();
 
 Token() async {
@@ -31,6 +31,7 @@ class ApiClient {
                   (status >= 200 && status < 300 ||
                       status == 404 ||
                       status == 403 ||
+                      status == 422 ||
                       status == 500);
             },
           ));
@@ -64,6 +65,7 @@ class ApiClient {
                     (status >= 200 && status < 300 ||
                         status == 400 ||
                         status == 404 ||
+                        status == 422 ||
                         status == 403);
               }));
       print('status code ni${response.statusCode}');
@@ -102,6 +104,7 @@ class ApiClient {
                     (status >= 200 && status < 300 ||
                         status == 400 ||
                         status == 404 ||
+                        status == 422 ||
                         status == 403);
               }));
       print('status code ni${response.statusCode}');
@@ -154,4 +157,3 @@ class ApiClient {
     }
   }
 }
- 

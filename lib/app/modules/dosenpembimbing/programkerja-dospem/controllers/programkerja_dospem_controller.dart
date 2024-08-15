@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, unnecessary_overrides
 
+import 'dart:ffi';
+
 import 'package:bebas/app/data/Helpers/apiclient.dart';
 import 'package:bebas/app/data/model/kelompokget_model.dart';
 import 'package:bebas/app/data/model/programkerja_model.dart';
@@ -17,6 +19,7 @@ class ProgramkerjaDospemController extends GetxController {
   var indexBtn = 0.obs;
   Rx<String> Dropdownvalue = 'approve'.obs;
   Rx<int> currenStepPageview = 0.obs;
+  Rx<bool> loadProgramKerja = true.obs;
   final count = 0.obs;
 
   @override
@@ -51,32 +54,36 @@ class ProgramkerjaDospemController extends GetxController {
   viewProker() async {
     try {
       final response = await ApiClient().get('api/program-kerja');
-      List<dynamic> data = response.data;
-      List<dynamic> dataProkerReview = [];
-      List<dynamic> dataProkerApprove = [];
-      List<dynamic> dataProkerReject = [];
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        List<dynamic> data = response.data;
+        List<dynamic> dataProkerReview = [];
+        List<dynamic> dataProkerApprove = [];
+        List<dynamic> dataProkerReject = [];
 
-      for (int i = 0; i < data.length; i++) {
-        final proker = response.data[i];
-        if (response.data[i]['id_kelompok'] == kelompok.idKelompok) {
-          if (proker['approve'] == 'review') {
-            dataProkerReview.add(response.data[i]);
-          } else if (proker['approve'] == 'approve') {
-            dataProkerApprove.add(response.data[i]);
-          } else if (proker['approve'] == 'reject') {
-            dataProkerReject.add(response.data[i]);
+        for (int i = 0; i < data.length; i++) {
+          final proker = response.data[i];
+          if (response.data[i]['id_kelompok'] == kelompok.idKelompok) {
+            if (proker['approve'] == 'review') {
+              dataProkerReview.add(response.data[i]);
+            } else if (proker['approve'] == 'approve') {
+              dataProkerApprove.add(response.data[i]);
+            } else if (proker['approve'] == 'reject') {
+              dataProkerReject.add(response.data[i]);
+            }
           }
         }
-      }
- 
-      if (dataProkerReview.isNotEmpty) {
-        allProkerReview.value = AllProgramKerjaGet.fromJson(dataProkerReview);
-      }
-      if (dataProkerApprove.isNotEmpty) {
-        allProkerApprove.value = AllProgramKerjaGet.fromJson(dataProkerApprove);
-      }
-      if (dataProkerApprove.isNotEmpty) {
-        allProkerReject.value = AllProgramKerjaGet.fromJson(dataProkerReject);
+
+        if (dataProkerReview.isNotEmpty) {
+          allProkerReview.value = AllProgramKerjaGet.fromJson(dataProkerReview);
+        }
+        if (dataProkerApprove.isNotEmpty) {
+          allProkerApprove.value =
+              AllProgramKerjaGet.fromJson(dataProkerApprove);
+        }
+        if (dataProkerApprove.isNotEmpty) {
+          allProkerReject.value = AllProgramKerjaGet.fromJson(dataProkerReject);
+        }
+        loadProgramKerja.value = false;
       }
     } catch (e) {
       print('error $e');
@@ -86,10 +93,14 @@ class ProgramkerjaDospemController extends GetxController {
   insertUpdateStatus(int id, ProgramKerjaGet proker) async {
     try {
       var data = proker.toJsonStatus();
+
       final response =
           await ApiClient().put('api/program-kerja/$id/status', data);
       print('Response data${response.data}');
       if (response.statusCode == 200 || response.statusCode == 201) {
+        updateProker.value = 0;
+        indexBtn.value = 0;
+
         viewProker();
         Get.snackbar('Berhasil', response.data['message'],
             backgroundColor: Colors.green, colorText: Colors.white);

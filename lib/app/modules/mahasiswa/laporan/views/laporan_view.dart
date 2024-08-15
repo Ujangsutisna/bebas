@@ -31,98 +31,119 @@ class LaporanView extends GetView<LaporanController> {
               child: Container(
                 padding: const EdgeInsets.all(20),
                 child: Obx(() {
+                  final isLoad = controller.isLoadLaporan.value;
                   final laporan = controller.allLaporan.value.laporan;
-                  if (controller.allLaporan.value.laporan != null) {
-                    return ListView(
-                      children: [
-                        for (int i = 0; i < laporan!.length; i++)
-                          Container(
-                            margin: const EdgeInsets.only(
-                              bottom: 10,
-                            ),
-                            padding: const EdgeInsets.all(10),
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                            ),
-                            child: Row(crossAxisAlignment: CrossAxisAlignment.start,
+                  return isLoad
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : controller.allLaporan.value.laporan != null
+                          ? ListView(
                               children: [
-                              
-                              Column(
-                                children: [
+                                for (int i = 0; i < laporan!.length; i++)
                                   Container(
-                                    width: 60,
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                        color: greenglo,
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(5))),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          '${i + 1}',
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                        const SizedBox(height: 5),
-                                        Text(
-                                          '${laporan[i].approve}',
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                      ],
+                                    margin: const EdgeInsets.only(
+                                      bottom: 10,
                                     ),
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(5)),
+                                    ),
+                                    child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              Container(
+                                                width: 60,
+                                                height: 60,
+                                                decoration: BoxDecoration(
+                                                    color: greenglo,
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                5))),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      '${i + 1}',
+                                                      style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                    ),
+                                                    const SizedBox(height: 5),
+                                                    Text(
+                                                      '${laporan[i].approve}',
+                                                      style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 60,
+                                                child: MaterialButton(
+                                                    color: greenglo,
+                                                    onPressed: () {
+                                                      final fileName =
+                                                          laporan[i]
+                                                              .fileLaporan;
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return SfPdfViewer
+                                                                .network(
+                                                                    'https://kkn.proyek.org/storage/$fileName');
+                                                          });
+                                                    },
+                                                    child: const Text("pdf",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white))),
+                                              )
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                    '${laporan[i].judulLaporan}',
+                                                    style: TextStyle(
+                                                        color: greenglo,
+                                                        fontWeight:
+                                                            FontWeight.w600)),
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text(
+                                                    '${laporan[i].bodyLaporan}')
+                                              ],
+                                            ),
+                                          ),
+                                        ]),
                                   ),
-                                  SizedBox(width: 60,
-                                    child: MaterialButton(
-                                      color: greenglo,
-                                        onPressed: () {
-                                          final fileName = laporan[i].fileLaporan;
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return SfPdfViewer.network(
-                                                    'https://kkn.proyek.org/storage/$fileName');
-                                              });
-                                        },
-                                        child: const Text("pdf",
-                                            style: TextStyle(color: Colors.white))),
-                                  )
-                                ],
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('${laporan[i].judulLaporan}',style:TextStyle(color:greenglo,fontWeight: FontWeight.w600)),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text('${laporan[i].bodyLaporan}')
-                                  ],
-                                ),
-                              ),
-                            ]),
-                          ),
-                      ],
-                    );
-                  } else if (!controller.isdatalaporan.value) {
-                    return const Center(child: Text('Anda belum simpan laporan'));
-                  }
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                              ],
+                            )
+                          : const Center(
+                              child: Text('Anda belum simpan laporan'));
                 }),
               ),
             )
@@ -143,11 +164,11 @@ class LaporanView extends GetView<LaporanController> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            _textInputField(1, controller.titleCtrl, 'Title'),
+            _textInputField(1, controller.titleCtrl, 'Judul'),
             const SizedBox(
               height: 10,
             ),
-            _textInputField(1, controller.bodyCtrl, 'Body'),
+            _textInputField(1, controller.bodyCtrl, 'Isi'),
             const SizedBox(
               height: 10,
             ),
@@ -195,6 +216,7 @@ class LaporanView extends GetView<LaporanController> {
 
   _textInputField(int lines, ctrl, String label) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         SizedBox(width: 80, child: Text(label)),
         const SizedBox(

@@ -301,7 +301,7 @@ class DaftarkknView extends GetView<DaftarkknController> {
                         )
                       : const SizedBox()),
                   const Divider(),
-                  const Text('Lokasi KKn',
+                  const Text('Lokasi KKN',
                       style: TextStyle(fontWeight: FontWeight.w600)),
                   Text(
                     '${controller.Jalanctrl.value.text} ${controller.RtRwctrl.value.text} ${controller.Desactrl.value.text} ${controller.Kecctrl.value.text} ${controller.KabKotactrl.value.text}',

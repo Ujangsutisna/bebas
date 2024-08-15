@@ -18,12 +18,17 @@ class BerandaController extends GetxController {
   Rx<BimbinganModel> bimbingan = BimbinganModel().obs;
   Rx<AllSidangModel> allSidang = AllSidangModel().obs;
   Rx<DataUser> dataUser = DataUser().obs;
+  Rx<bool> loadKelompok = true.obs;
+  Rx<bool> loadBimbingan = true.obs;
+  Rx<bool> loadSidang = true.obs;
+  Rx<bool> loadUser = true.obs;
 
   List<dynamic> menuPageView = [
-    'Pendaftaran',
-    'Bimbingan',
-    'JadwaL Sidang',
+    'pendaftaran',
+    'bimbingan',
+    'jadwal sidang',
   ];
+
   var userType = ''.obs;
   final PageViewCtrl = PageController();
   var currentIndexPageView = 0.obs;
@@ -60,12 +65,12 @@ class BerandaController extends GetxController {
     currentIndexPageView.value = index;
   }
 
-  void fetchUserType() async {
+  fetchUserType() async {
     final userInfo = UserInfo();
     userType.value = (await userInfo.getTypeAccount()) ?? '';
   }
 
-  LoadData() async {
+  Future<void> LoadData() async {
     final userInfo = UserInfo();
     final userID = await userInfo.getUserID();
     final typeAccount = await userInfo.getTypeAccount();
@@ -73,26 +78,28 @@ class BerandaController extends GetxController {
     print('Type akun ::: $typeAccount');
     LoadDataUser();
     if (typeAccount == 'mahasiswa') {
-      _LoadKelompok(userID!);
-      _LoadProgramKerja();
-      _loadBimbingan();
-      _loadJadwalSidang();
+      await _LoadKelompok(userID!);
+      await _loadBimbingan();
+      await _loadJadwalSidang();
     }
   }
 
   _loadJadwalSidang() async {
     try {
       final response = await ApiClient().get('api/sidang');
-      List<dynamic> dataSidang = response.data;
-      final dataSidangLength = dataSidang.length;
-      List<dynamic> allSidangById = [];
-      for (int i = 0; i < dataSidangLength; i++) {
-        if (dataSidang[i]['id_kelompok'] == Kelompok.value.idKelompok) {
-          allSidangById.add(dataSidang[i]);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        List<dynamic> dataSidang = response.data;
+        final dataSidangLength = dataSidang.length;
+        List<dynamic> allSidangById = [];
+        for (int i = 0; i < dataSidangLength; i++) {
+          if (dataSidang[i]['id_kelompok'] == Kelompok.value.idKelompok) {
+            allSidangById.add(dataSidang[i]);
+          }
         }
-      }
-      if (allSidangById.isNotEmpty) {
-        allSidang.value = AllSidangModel.fromJson(allSidangById);
+        if (allSidangById.isNotEmpty) {
+          allSidang.value = AllSidangModel.fromJson(allSidangById);
+        }
+        loadSidang.value = false;
       }
     } catch (e) {
       print(e);
@@ -105,53 +112,31 @@ class BerandaController extends GetxController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         dataUser.value = DataUser.fromJson(response.data['data']['summary']);
         print(dataUser.value.email);
-      } else {}
+        loadUser.value = false;
+      }
     } catch (e) {
       print('Error load user: $e');
-    }
-  }
-
-  _LoadProgramKerja() async {
-    try {
-      final response = await ApiClient().get('api/program-kerja');
-
-      List<dynamic> dataArray = response.data;
-      int lastIndex = dataArray.length;
-
-      List<dynamic>? data = [];
-
-      for (int i = 0; i < lastIndex; i++) {
-        final kelompok = response.data[i]['id_kelompok'];
-
-        if (kelompok == Kelompok.value.idKelompok) {
-          data.add(response.data[i]);
-        }
-      }
-      if (data.isNotEmpty) {
-        print('nnti aja gua view');
-      } else {
-        print('Tidak ada program kerja yang sesuai ditemukan');
-      }
-    } catch (e) {
-      print('Error load proker: $e');
     }
   }
 
   _loadBimbingan() async {
     try {
       final response = await ApiClient().get('api/bimbingan');
-      List<dynamic> dataBimbingan = response.data;
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        List<dynamic> dataBimbingan = response.data;
 
-      final bimbinganLength = dataBimbingan.length;
-      dynamic bimbinganLastByiD;
-      for (int i = 0; i < bimbinganLength; i++) {
-        if (dataBimbingan[i]['id_kelompok'] == Kelompok.value.idKelompok) {
-          bimbinganLastByiD = response.data[i];
+        final bimbinganLength = dataBimbingan.length;
+        dynamic bimbinganLastByiD;
+        for (int i = 0; i < bimbinganLength; i++) {
+          if (dataBimbingan[i]['id_kelompok'] == Kelompok.value.idKelompok) {
+            bimbinganLastByiD = response.data[i];
+          }
         }
-      }
 
-      if (bimbinganLastByiD != null) {
-        bimbingan.value = BimbinganModel.fromJson(bimbinganLastByiD);
+        if (bimbinganLastByiD != null) {
+          bimbingan.value = BimbinganModel.fromJson(bimbinganLastByiD);
+        }
+        loadBimbingan.value = false;
       }
     } catch (e) {
       print(e);
@@ -161,12 +146,14 @@ class BerandaController extends GetxController {
   _LoadKelompok(String userID) async {
     try {
       final response = await ApiClient().get('api/kelompok?nim=$userID');
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        List<dynamic> dataArray = response.data;
+        int lastIndex = dataArray.length - 1;
 
-      List<dynamic> dataArray = response.data;
-      int lastIndex = dataArray.length - 1;
-
-      if (response.data != null) {
-        Kelompok.value = KelompokGet.fromJson(response.data[lastIndex]);
+        if (response.data != null) {
+          Kelompok.value = KelompokGet.fromJson(response.data[lastIndex]);
+        }
+        loadKelompok.value = false;
       }
     } catch (e) {
       print('Error kelompok : $e');

@@ -20,28 +20,31 @@ class JadwalsidangDospemView extends GetView<JadwalsidangDospemController> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('JadwalsidangDospemView'),
-          centerTitle: true,
+          title: const Text(
+            'Jadwal sidang',
+            style: TextStyle(
+                color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),
+          ),
         ),
         body: Column(children: [
           _CardFormInput(context),
           Expanded(child: Obx(() {
             final sidang = controller.allSidang.value.sidangModel;
-            if (sidang != null) {
-              return Container(
-                padding: const EdgeInsets.all(20),
-                child: ListView(
-                  children: [
-                    for (int i = 0; i < sidang.length; i++)
-                      _loadDataSidang(i, sidang[i]),
-                  ],
-                ),
-              );
-            } else {
-              return const Center(
-                child: Text('data kosong'),
-              );
-            }
+            return controller.loadSidang.value
+                ? const Center(child: CircularProgressIndicator())
+                : sidang != null
+                    ? Container(
+                        padding: const EdgeInsets.all(20),
+                        child: ListView(
+                          children: [
+                            for (int i = 0; i < sidang.length; i++)
+                              _loadDataSidang(i, sidang[i]),
+                          ],
+                        ),
+                      )
+                    : const Center(
+                        child: Text('data kosong'),
+                      );
           }))
         ]));
   }

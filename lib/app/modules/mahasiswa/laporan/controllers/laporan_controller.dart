@@ -9,8 +9,7 @@ class LaporanController extends GetxController {
   TextEditingController titleCtrl = TextEditingController();
   TextEditingController bodyCtrl = TextEditingController();
   Rx<AllLaporanModel> allLaporan = AllLaporanModel().obs;
-  Rx<bool> isdatalaporan = false.obs;
-
+  Rx<bool> isLoadLaporan = true.obs;
   KelompokGet kelompok = Get.arguments;
   late File selectedFile;
   final RxString fileName = ''.obs;
@@ -44,19 +43,21 @@ class LaporanController extends GetxController {
   viewLaporan() async {
     try {
       final response = await ApiClient().get('api/laporan');
-      List<dynamic> laporan = response.data;
-      final lengthLaporan = laporan.length;
-      List<dynamic> allLaporanByKelompok = [];
-      for (int i = 0; i < lengthLaporan; i++) {
-        if (laporan[i]['id_kelompok'] == kelompok.idKelompok) {
-          allLaporanByKelompok.add(laporan[i]);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        List<dynamic> laporan = response.data;
+        final lengthLaporan = laporan.length;
+        List<dynamic> allLaporanByKelompok = [];
+        for (int i = 0; i < lengthLaporan; i++) {
+          if (laporan[i]['id_kelompok'] == kelompok.idKelompok) {
+            allLaporanByKelompok.add(laporan[i]);
+          }
         }
-      }
-      if (allLaporanByKelompok.isNotEmpty) {
-        allLaporan.value = AllLaporanModel.fromJson(allLaporanByKelompok);
-        isdatalaporan.value = true;
-      } else {
-        print('ga da');
+        if (allLaporanByKelompok.isNotEmpty) {
+          allLaporan.value = AllLaporanModel.fromJson(allLaporanByKelompok);
+          isLoadLaporan.value = false;
+        } else {
+          print('ga da');
+        }
       }
     } catch (e) {
       print('Error: $e');

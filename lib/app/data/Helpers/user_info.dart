@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String TOKEN = 'token';
@@ -33,7 +34,7 @@ class UserInfo {
     return pref.setString(TYPE_ACCOUNT, value);
   }
 
-  Future<String?>getTypeAccount() async {
+  Future<String?> getTypeAccount() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     return pref.getString(TYPE_ACCOUNT).toString();
   }
@@ -41,5 +42,6 @@ class UserInfo {
   Future<void> logout() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     pref.clear();
+    Get.offAllNamed('login');
   }
 }

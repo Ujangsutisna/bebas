@@ -68,95 +68,187 @@ class PenilaianDospemView extends GetView<PenilaianDospemController> {
                         : controller.isMenuTampilNilai.value = true;
                   },
                   child: const Text('Lihat Nilai')),
-              _loadDataNilai()
+              _loadDataNilai(context)
             ],
           ),
         ));
   }
 
-  _loadDataNilai() {
+  _loadDataNilai(context) {
     return Obx(() {
+      final mahasiswa = controller.allMahasiswa.value.mahasiswa;
       final allNilai = controller.allNilai;
       return controller.isMenuTampilNilai.value
           ? Container(
-              padding: const EdgeInsets.all(20),
-              child: controller.allNilai.isNotEmpty
-                  ? Container(
-                      decoration: const BoxDecoration(
-                          border: Border(
-                              right: BorderSide(width: 0.2),
-                              left: BorderSide(width: 0.2))),
-                      child: Column(
-                        children: [
-                          _rowData('Penilaian', '', bluedark),
-                          _rowData('Pelaksanaan KKN', '',
-                              const Color.fromARGB(255, 237, 237, 237),
-                              isKategori: true),
-                          SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: DataTable(columns: [
-                                const DataColumn(
-                                    label: SizedBox(
-                                        width: 100, child: Text('Kategori'))),
-                                for (int i = 0; i < allNilai.length; i++)
-                                  DataColumn(
-                                      label: Text(
-                                          '${allNilai[i].penilaian![0].nim}'))
-                              ], rows: [
-                                for (int k = 0;
-                                    k < controller.pelaksanaanKKN.length;
-                                    k++)
-                                  DataRow(cells: [
-                                    DataCell(Text(
-                                        '${controller.pelaksanaanKKN[k]}')),
-                                    for (int i = 0; i < allNilai.length; i++)
-                                      for (int p = 0;
-                                          p < allNilai[i].penilaian!.length;
-                                          p++)
-                                        if (allNilai[i]
-                                                .penilaian![p]
-                                                .jenisNilai ==
-                                            controller.pelaksanaanKKN[k])
+              padding: const EdgeInsets.all(10),
+              child: controller.loadNilai.value
+                  ? const Center(child: CircularProgressIndicator())
+                  : controller.allNilai.isNotEmpty
+                      ? Container(
+                          decoration: const BoxDecoration(
+                              border: Border(
+                                  right: BorderSide(width: 0.2),
+                                  left: BorderSide(width: 0.2))),
+                          child: Column(
+                            children: [
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: DataTable(
+                                    headingRowColor:
+                                        MaterialStateProperty.resolveWith(
+                                            (Set<MaterialState> states) {
+                                      return bluedark;
+                                    }),
+                                    columns: [
+                                      const DataColumn(
+                                          label: Text(
+                                        'Kategori',
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                      for (int i = 0; i < allNilai.length; i++)
+                                        DataColumn(
+                                            label: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                                '${mahasiswa != null ? mahasiswa[i].nama : ''}',
+                                                style: const TextStyle(
+                                                    color: Colors.white)),
+                                            Text(
+                                                '( ${allNilai[i].penilaian![0].nim} )',
+                                                style: const TextStyle(
+                                                    color: Colors.white)),
+                                          ],
+                                        ))
+                                    ],
+                                    rows: [
+                                      DataRow(
+                                          color:
+                                              MaterialStateProperty.resolveWith(
+                                                  (Set<MaterialState> states) {
+                                            return const Color.fromARGB(
+                                                255, 227, 227, 227);
+                                          }),
+                                          cells: [
+                                            const DataCell(
+                                                Text('Pelaksanaan KKN')),
+                                            for (int i = 0;
+                                                i < allNilai.length;
+                                                i++)
+                                              const DataCell(Text('')),
+                                          ]),
+                                      for (int k = 0;
+                                          k < controller.pelaksanaanKKN.length;
+                                          k++)
+                                        DataRow(cells: [
                                           DataCell(Text(
-                                              '${allNilai[i].penilaian![p].nilai}'))
-                                  ])
-                              ])),
-                          _rowData('Laporan KKN', '',
-                              const Color.fromARGB(255, 237, 237, 237),
-                              isKategori: true),
-                          SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: DataTable(columns: [
-                                const DataColumn(
-                                    label: SizedBox(
-                                        width: 100, child: Text('Kategori'))),
-                                for (int i = 0; i < allNilai.length; i++)
-                                  DataColumn(
-                                      label: Text(
-                                          '${allNilai[i].penilaian![0].nim}'))
-                              ], rows: [
-                                for (int k = 0;
-                                    k < controller.laporanKKN.length;
-                                    k++)
-                                  DataRow(cells: [
-                                    DataCell(
-                                        Text('${controller.laporanKKN[k]}')),
-                                    for (int i = 0; i < allNilai.length; i++)
-                                      for (int p = 0;
-                                          p < allNilai[i].penilaian!.length;
-                                          p++)
-                                        if (allNilai[i]
-                                                .penilaian![p]
-                                                .jenisNilai ==
-                                            controller.laporanKKN[k])
+                                              '${controller.pelaksanaanKKN[k]}')),
+                                          for (int i = 0;
+                                              i < allNilai.length;
+                                              i++)
+                                            for (int p = 0;
+                                                p <
+                                                    allNilai[i]
+                                                        .penilaian!
+                                                        .length;
+                                                p++)
+                                              if (allNilai[i]
+                                                      .penilaian![p]
+                                                      .jenisNilai ==
+                                                  controller.pelaksanaanKKN[k])
+                                                DataCell(Center(
+                                                  child: Text(
+                                                      '${allNilai[i].penilaian![p].nilai}'),
+                                                ))
+                                        ]),
+                                      DataRow(
+                                          color:
+                                              MaterialStateProperty.resolveWith(
+                                                  (Set<MaterialState> states) {
+                                            return const Color.fromARGB(
+                                                255, 227, 227, 227);
+                                          }),
+                                          cells: [
+                                            const DataCell(Text('Laporan KKN')),
+                                            for (int i = 0;
+                                                i < allNilai.length;
+                                                i++)
+                                              const DataCell(Text('')),
+                                          ]),
+                                      for (int k = 0;
+                                          k < controller.laporanKKN.length;
+                                          k++)
+                                        DataRow(cells: [
                                           DataCell(Text(
-                                              '${allNilai[i].penilaian![p].nilai}'))
-                                  ])
-                              ])),
-                        ],
-                      ),
-                    )
-                  : const SizedBox())
+                                              '${controller.laporanKKN[k]}')),
+                                          for (int i = 0;
+                                              i < allNilai.length;
+                                              i++)
+                                            for (int p = 0;
+                                                p <
+                                                    allNilai[i]
+                                                        .penilaian!
+                                                        .length;
+                                                p++)
+                                              if (allNilai[i]
+                                                      .penilaian![p]
+                                                      .jenisNilai ==
+                                                  controller.laporanKKN[k])
+                                                DataCell(Center(
+                                                  child: Text(
+                                                      '${allNilai[i].penilaian![p].nilai}'),
+                                                ))
+                                        ]),
+                                      DataRow(
+                                          color:
+                                              MaterialStateProperty.resolveWith(
+                                                  (Set<MaterialState> states) {
+                                            return const Color.fromARGB(
+                                                255, 227, 227, 227);
+                                          }),
+                                          cells: [
+                                            const DataCell(Text(
+                                              'Rata rata',
+                                            )),
+                                            for (int i = 0;
+                                                i < allNilai.length;
+                                                i++)
+                                              DataCell(Center(
+                                                  child: Text(
+                                                controller
+                                                    .averageNilaiByNim(i)
+                                                    .toStringAsFixed(3),
+                                              )))
+                                          ]),
+                                      DataRow(
+                                          color:
+                                              MaterialStateProperty.resolveWith(
+                                                  (Set<MaterialState> states) {
+                                            return bluedark;
+                                          }),
+                                          cells: [
+                                            const DataCell(Text(
+                                              'Grade',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            )),
+                                            for (int i = 0;
+                                                i < allNilai.length;
+                                                i++)
+                                              DataCell(Center(
+                                                  child: Text(
+                                                      controller.gradeNilai(i),
+                                                      style: const TextStyle(
+                                                          color:
+                                                              Colors.white))))
+                                          ])
+                                    ]),
+                              ),
+                            ],
+                          ),
+                        )
+                      : const Center(child: Text('Nilai kosong')))
           : const SizedBox();
     });
   }
@@ -230,26 +322,24 @@ class PenilaianDospemView extends GetView<PenilaianDospemController> {
 
   _dropDownMenu() {
     return Obx(() {
-      return Container(
-        child: DropdownButton<String>(
-            alignment: Alignment.bottomRight,
-            underline: const SizedBox(),
-            value: controller.dropDown.value,
-            items: controller.anggota
-                .map<DropdownMenuItem<String>>((dynamic value) {
-              return DropdownMenuItem<String>(value: value, child: Text(value));
-            }).toList(),
-            onChanged: (String? newValue) {
-              controller.clearAlert();
+      return DropdownButton<String>(
+          alignment: Alignment.bottomRight,
+          underline: const SizedBox(),
+          value: controller.dropDown.value,
+          items:
+              controller.anggota.map<DropdownMenuItem<String>>((dynamic value) {
+            return DropdownMenuItem<String>(value: value, child: Text(value));
+          }).toList(),
+          onChanged: (String? newValue) {
+            controller.clearAlert();
 
-              controller.clearController();
-              controller.dropDown.value = newValue!;
+            controller.clearController();
+            controller.dropDown.value = newValue!;
 
-              controller.loadDataMahasiswa(newValue);
-            },
-            style: const TextStyle(
-                fontSize: 12, color: Color.fromARGB(255, 21, 21, 21))),
-      );
+            controller.loadDataMahasiswaByID(newValue);
+          },
+          style: const TextStyle(
+              fontSize: 12, color: Color.fromARGB(255, 21, 21, 21)));
     });
   }
 

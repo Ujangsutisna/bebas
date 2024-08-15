@@ -28,21 +28,18 @@ class LaporanDospemView extends GetView<LaporanDospemController> {
           padding: const EdgeInsets.all(10),
           child: Obx(() {
             final laporan = controller.allLaporan.value.laporan;
-
-            if (laporan != null) {
-              return ListView(
-                children: [
-                  for (int i = 0; i < laporan.length; i++)
-                    viewLoadData(laporan[i], i, context)
-                ],
-              );
-            } else if (laporan == null && !controller.isdatalaporan.value) {
-              return const Center(
-                child: Text('Kelompok ini belum simpan laporan'),
-              );
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
+            return controller.loadLaporan.value
+                ? const Center(child: CircularProgressIndicator())
+                : laporan != null
+                    ? ListView(
+                        children: [
+                          for (int i = 0; i < laporan.length; i++)
+                            viewLoadData(laporan[i], i, context)
+                        ],
+                      )
+                    : const Center(
+                        child: Text('Kelompok ini belum simpan laporan'),
+                      );
           }),
         ));
   }
@@ -88,10 +85,10 @@ class LaporanDospemView extends GetView<LaporanDospemController> {
                       ],
                     ),
                   ),
-                 const  SizedBox(height:5),
+                  const SizedBox(height: 5),
                   SizedBox(
                     width: 60,
-                    height:30,
+                    height: 30,
                     child: MaterialButton(
                         color: greenglo,
                         onPressed: () {
@@ -153,7 +150,10 @@ class LaporanDospemView extends GetView<LaporanDospemController> {
                                 child:
                                     const Icon(Icons.arrow_drop_down_rounded)))
                         : Text('Status sudah di perbaharui',
-                            style: TextStyle(color: bluedark,fontWeight: FontWeight.w500,height: 3))
+                            style: TextStyle(
+                                color: bluedark,
+                                fontWeight: FontWeight.w500,
+                                height: 3))
                   ],
                 ),
               ),

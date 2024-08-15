@@ -14,6 +14,7 @@ class BimbinganDospemController extends GetxController {
   TextEditingController linkCtrl = TextEditingController();
   TextEditingController tanggalCtrl = TextEditingController();
   Rx<AllBimbinganModel> allBimbingan = AllBimbinganModel().obs;
+  Rx<bool> loadBimbingan = true.obs;
   KelompokGet kelompok = Get.arguments;
 
   var selectedDate = DateTime.now().obs;
@@ -38,20 +39,30 @@ class BimbinganDospemController extends GetxController {
     selectedDate.value = newDate;
   }
 
+  clearInsertCtrl() {
+    titleCtrl.clear();
+    bodyCtrl.clear();
+    linkCtrl.clear();
+    tanggalCtrl.clear();
+  }
+
   loadBimbinganbyIdKelompok() async {
     try {
       final idKelompok = kelompok.idKelompok;
       final response = await ApiClient().get('api/bimbingan');
-      List<dynamic> dataBimbingan = response.data;
-      final bimbinganLength = dataBimbingan.length;
-      List<dynamic> allBimbinganById = [];
-      for (int i = 0; i < bimbinganLength; i++) {
-        if (dataBimbingan[i]['id_kelompok'] == idKelompok) {
-          allBimbinganById.add(dataBimbingan[i]);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        List<dynamic> dataBimbingan = response.data;
+        final bimbinganLength = dataBimbingan.length;
+        List<dynamic> allBimbinganById = [];
+        for (int i = 0; i < bimbinganLength; i++) {
+          if (dataBimbingan[i]['id_kelompok'] == idKelompok) {
+            allBimbinganById.add(dataBimbingan[i]);
+          }
         }
-      }
-      if (allBimbinganById.isNotEmpty) {
-        allBimbingan.value = AllBimbinganModel.fromJson(allBimbinganById);
+        if (allBimbinganById.isNotEmpty) {
+          allBimbingan.value = AllBimbinganModel.fromJson(allBimbinganById);
+        }
+        loadBimbingan.value = false;
       }
     } catch (e) {
       print('Error : $e');
@@ -64,8 +75,8 @@ class BimbinganDospemController extends GetxController {
       print('data json $data');
       final response = await ApiClient().post('api/bimbingan', data);
       if (response.statusCode == 200 || response.statusCode == 201) {
+        clearInsertCtrl();
         loadBimbinganbyIdKelompok();
-
         Get.snackbar('Berhasil', '${response.data['message']}',
             backgroundColor: Colors.green, colorText: Colors.white);
       } else {

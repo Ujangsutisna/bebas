@@ -1,6 +1,4 @@
 // ignore_for_file: non_constant_identifier_names, use_super_parameters
-
-import 'package:bebas/app/data/model/kelompokget_model.dart';
 import 'package:bebas/app/data/model/programkerja_model.dart';
 import 'package:bebas/app/data/model/programkerjapost.dart';
 import 'package:flutter/material.dart';
@@ -21,15 +19,65 @@ class ProgramkerjaView extends GetView<ProgramkerjaController> {
   Widget build(BuildContext context) {
     controller.onReady();
     var mdSize = MediaQuery.of(context).size;
-    KelompokGet kelompok = Get.arguments;
-    controller.kelompok = kelompok;
 
     return Scaffold(
       floatingActionButton: Container(
         height: 60,
         margin: const EdgeInsets.only(left: 10),
         child: MaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              showAdaptiveDialog(
+                  useRootNavigator: false,
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (_) {
+                    return SizedBox(
+                      child: Container(
+                        color: Colors.white,
+                        padding:
+                            const EdgeInsets.only(top: 20, left: 10, right: 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              '1. Upload pdf di google dan setting akses seperti di bawah',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            const SizedBox(height: 15),
+                            Image.asset('assets/images/aksesumum.png',
+                                width: mdSize.width, fit: BoxFit.cover),
+                            const SizedBox(height: 20),
+                            const Text(
+                              '2. Buka jendela di tab baru ',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            const SizedBox(height: 20),
+                            Image.asset('assets/images/jendela.png',
+                                width: mdSize.width, fit: BoxFit.cover),
+                            const SizedBox(height: 20),
+                            const Text(
+                              '3. copy idGdirve "1nCwoAx-8CcFr_bCdhJCKC5i6DAOKuOfk"',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            const SizedBox(height: 20),
+                            Image.asset('assets/images/idGdrive.png',
+                                width: mdSize.width, fit: BoxFit.cover),
+                          ],
+                        ),
+                      ),
+                    );
+                  });
+            },
             child: Column(
               children: [
                 Text('Informasi', style: TextStyle(color: redglobal)),
@@ -81,7 +129,7 @@ class ProgramkerjaView extends GetView<ProgramkerjaController> {
             );
           }),
           Expanded(
-            child: _PageViewProgramKerja(context, kelompok),
+            child: _PageViewProgramKerja(context),
           ),
         ]),
       ),
@@ -102,7 +150,7 @@ class ProgramkerjaView extends GetView<ProgramkerjaController> {
         ));
   }
 
-  _PageViewProgramKerja(context, kelompok) {
+  _PageViewProgramKerja(context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(17, 14, 17, 10),
       width: double.infinity,
@@ -116,37 +164,44 @@ class ProgramkerjaView extends GetView<ProgramkerjaController> {
               final prokerReview =
                   controller.allProkerReview.value.programKerja;
 
-              return prokerReview != null
-                  ? ListView(
-                      children: [
-                        for (int i = 0; i < prokerReview.length; i++)
-                          _dataProkerView(prokerReview[i], i, context, kelompok,
-                              isApprove: false)
-                      ],
+              return controller.isLoadProker.value
+                  ? const Center(
+                      child: CircularProgressIndicator(),
                     )
-                  : const Center(child: Text('Data program kerja kosong'));
+                  : prokerReview != null
+                      ? ListView(
+                          children: [
+                            for (int i = 0; i < prokerReview.length; i++)
+                              _dataProkerView(prokerReview[i], i, context,
+                                  isApprove: false)
+                          ],
+                        )
+                      : const Center(child: Text('Data program kerja kosong'));
             }),
             Obx(() {
               final prokerApprove =
                   controller.allProkerApprove.value.programKerja;
-              return prokerApprove != null
-                  ? ListView(
-                      children: [
-                        for (int i = 0; i < prokerApprove.length; i++)
-                          _dataProkerView(
-                              prokerApprove[i], i, context, kelompok)
-                      ],
+              return controller.isLoadProker.value
+                  ? const Center(
+                      child: CircularProgressIndicator(),
                     )
-                  : const Center(child: Text('Data program kerja kosong'));
+                  : prokerApprove != null
+                      ? ListView(
+                          children: [
+                            for (int i = 0; i < prokerApprove.length; i++)
+                              _dataProkerView(prokerApprove[i], i, context)
+                          ],
+                        )
+                      : const Center(child: Text('Data program kerja kosong'));
             }),
           ]),
     );
   }
 
   _dataProkerView(ProgramKerjaGet proker, int index, BuildContext context,
-      KelompokGet kelompok,
       {bool isApprove = true}) {
     return Obx(() {
+      print(controller.detailData.value);
       final id = proker.idProker;
       return Container(
         decoration: BoxDecoration(
@@ -229,9 +284,9 @@ class ProgramkerjaView extends GetView<ProgramkerjaController> {
                         fontWeight: FontWeight.w400,
                       )),
                   const SizedBox(height: 5),
-                  _rowData('Mulai', proker.tanggalMulai),
+                  _rowData('Mulai', proker.tanggalMulai ?? 'Tanggal kosong'),
                   const SizedBox(height: 5),
-                  _rowData('Selesai', proker.tanggalMulai),
+                  _rowData('Selesai', proker.tanggalMulai ?? 'Tanggal kosong'),
                   if (isApprove && proker.tanggalMulai == null)
                     SizedBox(
                       height: 30,
@@ -240,6 +295,7 @@ class ProgramkerjaView extends GetView<ProgramkerjaController> {
                             var isDetailData = controller.detailData.value;
                             if (isDetailData == 1) {
                               controller.detailData.value = 0;
+                              controller.clearUpdateCtrl();
                             } else {
                               controller.detailData.value = 1;
                             }
@@ -271,8 +327,7 @@ class ProgramkerjaView extends GetView<ProgramkerjaController> {
                                 child: _fieldInputDate(
                                     context,
                                     controller.tanggalMulaiCtrl,
-                                    'Tanggal mulai',
-                                    kelompok),
+                                    'Tanggal mulai'),
                               ),
                               const SizedBox(
                                 width: 10,
@@ -281,8 +336,7 @@ class ProgramkerjaView extends GetView<ProgramkerjaController> {
                                 child: _fieldInputDate(
                                     context,
                                     controller.tanggalSelesaiCtrl,
-                                    'Tanggal selesai',
-                                    kelompok),
+                                    'Tanggal selesai'),
                               )
                             ]),
                             SizedBox(
@@ -319,13 +373,14 @@ class ProgramkerjaView extends GetView<ProgramkerjaController> {
     });
   }
 
-  Widget _fieldInputDate(BuildContext context, TextEditingController ctrl,
-      String label, KelompokGet kelompok) {
+  Widget _fieldInputDate(
+      BuildContext context, TextEditingController ctrl, String label) {
     return TextFormField(
       controller: ctrl,
       readOnly: true,
       decoration: InputDecoration(labelText: label),
       onTap: () async {
+        final kelompok = controller.kelompok;
         DateTime firstDate = DateTime.parse('${kelompok.tanggalMulai}');
         DateTime lastDate = DateTime.parse('${kelompok.tanggalAkhir}');
         DateTime initialDate = controller.selectedDate.value;

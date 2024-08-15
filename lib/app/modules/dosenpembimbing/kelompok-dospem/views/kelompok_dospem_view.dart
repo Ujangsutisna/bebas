@@ -31,21 +31,26 @@ class KelompokDospemView extends GetView<KelompokDospemController> {
           child: Obx(() {
             final data = controller.allKelompok.value.kelompokGet;
 
-            return data == null
+            return controller.loadKelompok.value
                 ? const Center(child: CircularProgressIndicator())
-                : ListView(
-                    children: [
-                      for (int i = 0;
-                          i < controller.allKelompok.value.kelompokGet!.length;
-                          i++)
-                        _CardDataKelompok(data[i], nextpage)
-                    ],
-                  );
+                : data == null
+                    ? const Center(child: Text('Data Kelompok Kosong'))
+                    : ListView(
+                        children: [
+                          for (int i = 0;
+                              i <
+                                  controller
+                                      .allKelompok.value.kelompokGet!.length;
+                              i++)
+                            _CardDataKelompok(data[i], nextpage, i)
+                        ],
+                      );
           }),
         ));
   }
 
-  _CardDataKelompok(KelompokGet kelompok, nextpage) {
+  _CardDataKelompok(KelompokGet kelompok, nextpage, index) {
+    final allMahasiswa = controller.allMahasiswa.value.mahasiswa;
     return MaterialButton(
       onPressed: () {
         if (nextpage == 'Program kerja') {
@@ -57,7 +62,7 @@ class KelompokDospemView extends GetView<KelompokDospemController> {
         } else if (nextpage == 'Jadwal sidang') {
           Get.toNamed('jadwalsidang-dospem', arguments: kelompok);
         } else if (nextpage == 'Penilaian') {
-           Get.toNamed('penilaian-dospem', arguments: kelompok);
+          Get.toNamed('penilaian-dospem', arguments: kelompok);
         }
       },
       child: Container(
@@ -75,7 +80,8 @@ class KelompokDospemView extends GetView<KelompokDospemController> {
                       topRight: Radius.circular(6))),
               padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
               child: Center(
-                  child: Text('Ketua Kelompok ${kelompok.nimKetuaKelompok}',
+                  child: Text(
+                      'Ketua Kelompok ${allMahasiswa!.isNotEmpty ? allMahasiswa![index].nama : kelompok.nimKetuaKelompok}',
                       style: const TextStyle(color: Colors.white)))),
           Container(
             margin: const EdgeInsets.fromLTRB(10, 15, 10, 10),

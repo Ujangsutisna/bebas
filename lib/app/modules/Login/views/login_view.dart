@@ -61,7 +61,7 @@ class LoginView extends GetView<LoginController> {
                                 fontWeight: FontWeight.w800,
                                 fontSize: 30,
                                 color: Colors.white)),
-                        Text('Aplikasi Pendaftaran KKN UGM',
+                        Text('Aplikasi K2N Global Institute',
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 14,
@@ -129,8 +129,6 @@ class LoginView extends GetView<LoginController> {
                                     backgroundColor: greenglo,
                                     colorText: Colors.white);
                                 Get.offNamed('beranda');
-                               
-                           
                               } else {
                                 Get.snackbar(
                                     'Maaf', controller.messageEror.value,
@@ -146,7 +144,12 @@ class LoginView extends GetView<LoginController> {
                     ),
                     TextButton(
                         onPressed: () {
-                          Get.toNamed('ganti-password');
+                          Get.defaultDialog(
+                              radius: 5,
+                              title: 'Maaf',
+                              titleStyle: TextStyle(color: redglobal,fontWeight: FontWeight.w600),
+                              middleText: 'Fitur dalam pengembangan');
+                          // Get.toNamed('ganti-password');
                         },
                         child: const Text('Lupa Password ?',
                             style: TextStyle(

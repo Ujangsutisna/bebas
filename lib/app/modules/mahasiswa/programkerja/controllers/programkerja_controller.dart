@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 
 class ProgramkerjaController extends GetxController {
   //TODO: Implement ProgramkerjaController
+  KelompokGet kelompok = Get.arguments;
   Rx<AllProgramKerjaGet> allProkerReview = AllProgramKerjaGet().obs;
   Rx<AllProgramKerjaGet> allProkerApprove = AllProgramKerjaGet().obs;
   final formKeyInsert = GlobalKey<FormState>();
@@ -16,10 +17,11 @@ class ProgramkerjaController extends GetxController {
   TextEditingController bodyCtrl = TextEditingController();
   TextEditingController tanggalMulaiCtrl = TextEditingController();
   TextEditingController tanggalSelesaiCtrl = TextEditingController();
+  Rx<bool> isLoadProker = true.obs;
   Rx<int> detailData = 0.obs;
   var indexdata = 0.obs;
   final pageController = PageController();
-  KelompokGet kelompok = Get.arguments;
+
   Rx<int> currenStepPageview = 0.obs;
   var selectedDate = DateTime.now().obs;
 
@@ -31,8 +33,8 @@ class ProgramkerjaController extends GetxController {
 
   @override
   void onReady() {
-    kelompok;
     super.onReady();
+    kelompok;
 
     viewProker();
   }
@@ -59,6 +61,16 @@ class ProgramkerjaController extends GetxController {
     currenStepPageview.value = value;
   }
 
+  clearUpdateCtrl() {
+    tanggalMulaiCtrl.clear();
+    tanggalSelesaiCtrl.clear();
+  }
+
+  clearInserCtrl() {
+    judulCtrl.clear();
+    bodyCtrl.clear();
+  }
+
   viewProker() async {
     try {
       if (kelompok.anggota == null) {
@@ -83,9 +95,11 @@ class ProgramkerjaController extends GetxController {
       }
       if (dataProkerReview.isNotEmpty) {
         allProkerReview.value = AllProgramKerjaGet.fromJson(dataProkerReview);
+        isLoadProker.value = false;
       }
       if (dataProkerApprove.isNotEmpty) {
         allProkerApprove.value = AllProgramKerjaGet.fromJson(dataProkerApprove);
+        isLoadProker.value = false;
       }
     } catch (e) {
       print('error $e');
@@ -96,9 +110,10 @@ class ProgramkerjaController extends GetxController {
     try {
       final data = programkerja.toJson();
       final response = await ApiClient().post('api/program-kerja', data);
-      print('data ${response.data['message']}');
+
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Get.offNamed('beranda');
+        clearInserCtrl();
+        viewProker();
         Get.snackbar('Berhasi', '${response.data['message']}',
             backgroundColor: Colors.green, colorText: Colors.white);
       } else {
@@ -113,12 +128,12 @@ class ProgramkerjaController extends GetxController {
   updateTanggalProker(id, ProgramKerjaGet proker) async {
     try {
       final data = proker.toJsonUpdateTanggal();
-      print(data);
-      print('ctrl : $id');
       final response =
           await ApiClient().put('api/program-kerja/$id/done', data);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Get.reload();
+        detailData.value = 0;
+        indexdata.value = 0;
+        clearUpdateCtrl();
         viewProker();
         Get.snackbar('Berhasi', '${response.data['message']}',
             backgroundColor: Colors.green, colorText: Colors.white);
